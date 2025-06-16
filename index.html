@@ -12,9 +12,23 @@
             font-family: 'Inter', sans-serif;
             background-color: #f0f2f5;
         }
+        /* Styles for draggable words and drop zones */
         .draggable-word {
-            user-select: none; /* Prevent text selection during drag */
+            user-select: none; /* Prevent text selection during drag/touch */
             transition: all 0.2s ease-in-out;
+            touch-action: none; /* Prevent browser default touch actions like scrolling */
+        }
+        /* Visual feedback for dragging */
+        .draggable-word.is-dragging {
+            opacity: 0.7;
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+            position: absolute; /* Allows for dynamic positioning during touchmove */
+            z-index: 1000; /* Ensure it stays on top */
+            cursor: grabbing;
+        }
+        .drop-zone {
+            transition: background-color 0.2s ease, border-color 0.2s ease;
         }
         .drop-zone.drag-over {
             background-color: #e0f2fe; /* Lighter blue when dragging over */
@@ -36,84 +50,116 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
+        /* Feedback animations */
+        .feedback-message.correct {
+            animation: fadeInOut 2s forwards;
+        }
+        .feedback-message.incorrect {
+            animation: shake 0.5s;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(10px); }
+            20% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
     </style>
 </head>
-<body class="p-6">
+<body class="p-4 sm:p-6">
 
-    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 sm:p-10 my-8">
-        <h1 class="text-4xl font-extrabold text-center text-indigo-800 mb-8 tracking-tight">
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 sm:p-8 my-6">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-center text-indigo-800 mb-6 tracking-tight">
             Inverted Sentences Practice
         </h1>
-        <p class="text-xl text-gray-700 text-center mb-10 leading-relaxed">
+        <p class="text-base sm:text-xl text-gray-700 text-center mb-8 leading-relaxed">
             Drag and drop the words into the correct order to form the inverted sentences.
-            Use the "Check Answer" button to see if you're right, or "Reset" to try again.
+            Pay attention to the explanations for each sentence!
         </p>
 
         <!-- Container for all sentence sections -->
-        <div class="space-y-10">
+        <div class="space-y-8 sm:space-y-10">
 
             <!-- Sentence 1 -->
-            <div id="sentence1" class="p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-md">
-                <h3 class="text-2xl font-bold mb-4 text-indigo-700">Sentence 1: Start with "Rarely"</h3>
-                <div class="word-pool flex flex-wrap gap-3 mb-5 p-4 bg-white border border-dashed border-gray-300 rounded-lg min-h-[80px] items-center" data-correct-order="Rarely do we get the chance to witness such natural beauty.">
+            <div id="sentence1" class="p-5 sm:p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-md">
+                <h3 class="text-xl sm:text-2xl font-bold mb-3 text-indigo-700">Sentence 1: Start with "Rarely"</h3>
+                <p class="text-sm sm:text-base text-gray-600 mb-4 bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-md">
+                    <strong class="text-yellow-800">Explanation:</strong> When negative adverbs like "Rarely" start a sentence, we often invert the subject and auxiliary verb for emphasis.
+                </p>
+                <div class="word-pool flex flex-wrap gap-2 sm:gap-3 mb-4 p-3 sm:p-4 bg-white border border-dashed border-gray-300 rounded-lg min-h-[60px] sm:min-h-[80px] items-center" data-correct-order="Rarely do we get the chance to witness such natural beauty.">
                     <!-- Words will be shuffled and inserted here by JS -->
                 </div>
-                <div class="drop-zone flex flex-wrap gap-3 min-h-[80px] p-4 bg-blue-50 border border-blue-300 rounded-lg items-center justify-start text-gray-600 text-xl font-medium">
+                <div class="drop-zone flex flex-wrap gap-2 sm:gap-3 min-h-[60px] sm:min-h-[80px] p-3 sm:p-4 bg-blue-50 border border-blue-300 rounded-lg items-center justify-start text-gray-600 text-base sm:text-xl font-medium">
                     Drag words here...
                 </div>
-                <div class="flex items-center mt-6">
-                    <button class="check-button bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg mr-3">Check Answer</button>
-                    <button class="reset-button bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg">Reset</button>
+                <div class="flex flex-col sm:flex-row items-center mt-5">
+                    <button class="check-button bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg mb-2 sm:mb-0 sm:mr-3 w-full sm:w-auto text-sm sm:text-base">Check Answer</button>
+                    <button class="reset-button bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg w-full sm:w-auto text-sm sm:text-base">Reset</button>
                 </div>
-                <p class="feedback-message mt-4 text-lg font-semibold"></p>
+                <p class="feedback-message mt-3 sm:mt-4 text-base sm:text-lg font-semibold"></p>
             </div>
 
             <!-- Sentence 2 -->
-            <div id="sentence2" class="p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-md">
-                <h3 class="text-2xl font-bold mb-4 text-indigo-700">Sentence 2: Start with "Never have I"</h3>
-                <div class="word-pool flex flex-wrap gap-3 mb-5 p-4 bg-white border border-dashed border-gray-300 rounded-lg min-h-[80px] items-center" data-correct-order="Never have I heard such an inspiring speech.">
+            <div id="sentence2" class="p-5 sm:p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-md">
+                <h3 class="text-xl sm:text-2xl font-bold mb-3 text-indigo-700">Sentence 2: Start with "Never have I"</h3>
+                <p class="text-sm sm:text-base text-gray-600 mb-4 bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-md">
+                    <strong class="text-yellow-800">Explanation:</strong> Similar to "Rarely," "Never" is a negative adverb that triggers inversion of the auxiliary verb ("have") and the subject ("I") when placed at the beginning of a sentence.
+                </p>
+                <div class="word-pool flex flex-wrap gap-2 sm:gap-3 mb-4 p-3 sm:p-4 bg-white border border-dashed border-gray-300 rounded-lg min-h-[60px] sm:min-h-[80px] items-center" data-correct-order="Never have I heard such an inspiring speech.">
                     <!-- Words will be shuffled and inserted here by JS -->
                 </div>
-                <div class="drop-zone flex flex-wrap gap-3 min-h-[80px] p-4 bg-blue-50 border border-blue-300 rounded-lg items-center justify-start text-gray-600 text-xl font-medium">
+                <div class="drop-zone flex flex-wrap gap-2 sm:gap-3 min-h-[60px] sm:min-h-[80px] p-3 sm:p-4 bg-blue-50 border border-blue-300 rounded-lg items-center justify-start text-gray-600 text-base sm:text-xl font-medium">
                     Drag words here...
                 </div>
-                <div class="flex items-center mt-6">
-                    <button class="check-button bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg mr-3">Check Answer</button>
-                    <button class="reset-button bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg">Reset</button>
+                <div class="flex flex-col sm:flex-row items-center mt-5">
+                    <button class="check-button bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg mb-2 sm:mb-0 sm:mr-3 w-full sm:w-auto text-sm sm:text-base">Check Answer</button>
+                    <button class="reset-button bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg w-full sm:w-auto text-sm sm:text-base">Reset</button>
                 </div>
-                <p class="feedback-message mt-4 text-lg font-semibold"></p>
+                <p class="feedback-message mt-3 sm:mt-4 text-base sm:text-lg font-semibold"></p>
             </div>
 
             <!-- Sentence 3 -->
-            <div id="sentence3" class="p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-md">
-                <h3 class="text-2xl font-bold mb-4 text-indigo-700">Sentence 3: Start with "Only if"</h3>
-                <div class="word-pool flex flex-wrap gap-3 mb-5 p-4 bg-white border border-dashed border-gray-300 rounded-lg min-h-[80px] items-center" data-correct-order="Only if you study hard will you pass the final exam.">
+            <div id="sentence3" class="p-5 sm:p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-md">
+                <h3 class="text-xl sm:text-2xl font-bold mb-3 text-indigo-700">Sentence 3: Start with "Only if"</h3>
+                <p class="text-sm sm:text-base text-gray-600 mb-4 bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-md">
+                    <strong class="text-yellow-800">Explanation:</strong> When a phrase starting with "Only" (like "Only if," "Only then," "Only after") is placed at the beginning of a sentence for emphasis, it causes inversion in the main clause.
+                </p>
+                <div class="word-pool flex flex-wrap gap-2 sm:gap-3 mb-4 p-3 sm:p-4 bg-white border border-dashed border-gray-300 rounded-lg min-h-[60px] sm:min-h-[80px] items-center" data-correct-order="Only if you study hard will you pass the final exam.">
                     <!-- Words will be shuffled and inserted here by JS -->
                 </div>
-                <div class="drop-zone flex flex-wrap gap-3 min-h-[80px] p-4 bg-blue-50 border border-blue-300 rounded-lg items-center justify-start text-gray-600 text-xl font-medium">
+                <div class="drop-zone flex flex-wrap gap-2 sm:gap-3 min-h-[60px] sm:min-h-[80px] p-3 sm:p-4 bg-blue-50 border border-blue-300 rounded-lg items-center justify-start text-gray-600 text-base sm:text-xl font-medium">
                     Drag words here...
                 </div>
-                <div class="flex items-center mt-6">
-                    <button class="check-button bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg mr-3">Check Answer</button>
-                    <button class="reset-button bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg">Reset</button>
+                <div class="flex flex-col sm:flex-row items-center mt-5">
+                    <button class="check-button bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg mb-2 sm:mb-0 sm:mr-3 w-full sm:w-auto text-sm sm:text-base">Check Answer</button>
+                    <button class="reset-button bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg w-full sm:w-auto text-sm sm:text-base">Reset</button>
                 </div>
-                <p class="feedback-message mt-4 text-lg font-semibold"></p>
+                <p class="feedback-message mt-3 sm:mt-4 text-base sm:text-lg font-semibold"></p>
             </div>
 
             <!-- Sentence 4 -->
-            <div id="sentence4" class="p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-md">
-                <h3 class="text-2xl font-bold mb-4 text-indigo-700">Sentence 4: Start with "Had"</h3>
-                <div class="word-pool flex flex-wrap gap-3 mb-5 p-4 bg-white border border-dashed border-gray-300 rounded-lg min-h-[80px] items-center" data-correct-order="Had I known about the meeting, I would have attended.">
+            <div id="sentence4" class="p-5 sm:p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-md">
+                <h3 class="text-xl sm:text-2xl font-bold mb-3 text-indigo-700">Sentence 4: Start with "Had"</h3>
+                <p class="text-sm sm:text-base text-gray-600 mb-4 bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-md">
+                    <strong class="text-yellow-800">Explanation:</strong> In conditional sentences (often type 3) that omit "if," the auxiliary verb ("Had") is placed at the beginning of the clause, creating an inverted structure.
+                </p>
+                <div class="word-pool flex flex-wrap gap-2 sm:gap-3 mb-4 p-3 sm:p-4 bg-white border border-dashed border-gray-300 rounded-lg min-h-[60px] sm:min-h-[80px] items-center" data-correct-order="Had I known about the meeting, I would have attended.">
                     <!-- Words will be shuffled and inserted here by JS -->
                 </div>
-                <div class="drop-zone flex flex-wrap gap-3 min-h-[80px] p-4 bg-blue-50 border border-blue-300 rounded-lg items-center justify-start text-gray-600 text-xl font-medium">
+                <div class="drop-zone flex flex-wrap gap-2 sm:gap-3 min-h-[60px] sm:min-h-[80px] p-3 sm:p-4 bg-blue-50 border border-blue-300 rounded-lg items-center justify-start text-gray-600 text-base sm:text-xl font-medium">
                     Drag words here...
                 </div>
-                <div class="flex items-center mt-6">
-                    <button class="check-button bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg mr-3">Check Answer</button>
-                    <button class="reset-button bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg">Reset</button>
+                <div class="flex flex-col sm:flex-row items-center mt-5">
+                    <button class="check-button bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg mb-2 sm:mb-0 sm:mr-3 w-full sm:w-auto text-sm sm:text-base">Check Answer</button>
+                    <button class="reset-button bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg w-full sm:w-auto text-sm sm:text-base">Reset</button>
                 </div>
-                <p class="feedback-message mt-4 text-lg font-semibold"></p>
+                <p class="feedback-message mt-3 sm:mt-4 text-base sm:text-lg font-semibold"></p>
             </div>
 
         </div>
@@ -154,9 +200,10 @@
         }
 
         // Function to find the element after which the dragged element should be inserted
+        // This helps in visually reordering elements within a drop zone.
         function getDragAfterElement(container, x) {
-            // Get all draggable words in the container that are not the one currently being dragged
-            const draggableElements = [...container.querySelectorAll('.draggable-word:not(.opacity-50)')];
+            // Get all draggable words in the container that are not the one currently being dragged (if any)
+            const draggableElements = [...container.querySelectorAll('.draggable-word:not(.is-dragging)')];
 
             return draggableElements.reduce((closest, child) => {
                 const box = child.getBoundingClientRect();
@@ -172,7 +219,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Iterate over each sentence configuration
+            // Iterate over each sentence configuration to set up its interactive elements
             sentencesData.forEach(sentenceData => {
                 const sentenceContainer = document.getElementById(sentenceData.id);
                 const wordPool = sentenceContainer.querySelector('.word-pool');
@@ -181,23 +228,121 @@
                 const resetButton = sentenceContainer.querySelector('.reset-button');
                 const feedbackMessage = sentenceContainer.querySelector('.feedback-message');
 
-                // Variable to store the currently dragged DOM element
+                // Global variable to store the currently dragged DOM element across event listeners
                 let currentDraggedElement = null;
+                // Store initial touch position for calculating movement
+                let initialTouchX = 0;
+                let initialTouchY = 0;
+                // Store initial position of the dragged element relative to the screen
+                let initialElementX = 0;
+                let initialElementY = 0;
 
                 // Function to make a word element draggable and attach event listeners
                 function makeWordDraggable(wordElement) {
-                    wordElement.setAttribute('draggable', 'true');
+                    wordElement.setAttribute('draggable', 'true'); // For desktop drag-and-drop
                     wordElement.classList.add('draggable-word', 'px-3', 'py-1', 'bg-blue-200', 'text-blue-800', 'rounded-full', 'cursor-grab', 'shadow-sm', 'hover:bg-blue-300');
 
+                    // --- Desktop Drag and Drop Events ---
                     wordElement.addEventListener('dragstart', (e) => {
                         currentDraggedElement = e.target; // Store the reference to the dragged element
                         e.dataTransfer.effectAllowed = 'move'; // Define the type of drag operation
-                        e.target.classList.add('opacity-50', 'border-2', 'border-blue-500'); // Add visual feedback for dragging
+                        e.target.classList.add('is-dragging'); // Add visual feedback for dragging
                     });
 
                     wordElement.addEventListener('dragend', (e) => {
-                        e.target.classList.remove('opacity-50', 'border-2', 'border-blue-500'); // Remove visual feedback
+                        e.target.classList.remove('is-dragging'); // Remove visual feedback
                         currentDraggedElement = null; // Clear the reference
+                    });
+
+                    // --- Touch Events for Mobile Drag and Drop ---
+                    wordElement.addEventListener('touchstart', (e) => {
+                        e.preventDefault(); // Prevent text selection and default touch actions (like scrolling)
+                        currentDraggedElement = e.target; // Store the reference
+                        currentDraggedElement.classList.add('is-dragging');
+
+                        // Get the initial touch position
+                        initialTouchX = e.touches[0].clientX;
+                        initialTouchY = e.touches[0].clientY;
+
+                        // Get the element's current position relative to the viewport
+                        const rect = currentDraggedElement.getBoundingClientRect();
+                        initialElementX = rect.left;
+                        initialElementY = rect.top;
+
+                        // Set the element to fixed position relative to viewport for dragging
+                        currentDraggedElement.style.position = 'fixed';
+                        currentDraggedElement.style.left = initialElementX + 'px';
+                        currentDraggedElement.style.top = initialElementY + 'px';
+                    });
+
+                    wordElement.addEventListener('touchmove', (e) => {
+                        e.preventDefault(); // Prevent scrolling while dragging
+
+                        if (currentDraggedElement) {
+                            // Calculate new position based on touch movement
+                            const deltaX = e.touches[0].clientX - initialTouchX;
+                            const deltaY = e.touches[0].clientY - initialTouchY;
+
+                            currentDraggedElement.style.left = (initialElementX + deltaX) + 'px';
+                            currentDraggedElement.style.top = (initialElementY + deltaY) + 'px';
+
+                            // Simulate dragover for touch: check if over a drop zone
+                            // Check all drop zones, though in this app there's only one relevant per sentence
+                            document.querySelectorAll('.drop-zone').forEach(dz => {
+                                const rect = dz.getBoundingClientRect();
+                                const touchX = e.touches[0].clientX;
+                                const touchY = e.touches[0].clientY;
+
+                                if (touchX >= rect.left && touchX <= rect.right &&
+                                    touchY >= rect.top && touchY <= rect.bottom) {
+                                    dz.classList.add('drag-over');
+
+                                    // If dragging over the correct drop zone, reorder elements
+                                    const afterElement = getDragAfterElement(dz, touchX);
+                                    if (afterElement == null) {
+                                        dz.appendChild(currentDraggedElement);
+                                    } else {
+                                        dz.insertBefore(currentDraggedElement, afterElement);
+                                    }
+                                } else {
+                                    dz.classList.remove('drag-over');
+                                }
+                            });
+                        }
+                    });
+
+                    wordElement.addEventListener('touchend', (e) => {
+                        if (currentDraggedElement) {
+                            currentDraggedElement.classList.remove('is-dragging');
+                            currentDraggedElement.style.position = ''; // Reset position styles
+                            currentDraggedElement.style.left = '';
+                            currentDraggedElement.style.top = '';
+
+                            // Determine if the word was dropped into the drop zone
+                            const dropZoneRect = dropZone.getBoundingClientRect();
+                            const touchX = e.changedTouches[0].clientX;
+                            const touchY = e.changedTouches[0].clientY;
+
+                            if (touchX >= dropZoneRect.left && touchX <= dropZoneRect.right &&
+                                touchY >= dropZoneRect.top && touchY <= dropZoneRect.bottom) {
+                                // Clear placeholder if present
+                                if (dropZone.textContent.trim() === 'Drag words here...') {
+                                    dropZone.innerHTML = '';
+                                }
+                                // The element is already visually in the correct spot due to touchmove, no need to append.
+                                // Just remove the cursor change class
+                                currentDraggedElement.classList.remove('cursor-grab');
+                                currentDraggedElement.classList.add('cursor-move');
+                            } else {
+                                // If dropped outside, return to its original container (wordPool or previous dropZone)
+                                // For simplicity, we'll return it to the wordPool for now if dropped anywhere invalid.
+                                // A more complex implementation might remember its original parent.
+                                wordPool.appendChild(currentDraggedElement);
+                            }
+                            // Ensure the drag-over class is removed from any drop zone
+                            document.querySelectorAll('.drop-zone').forEach(dz => dz.classList.remove('drag-over'));
+                            currentDraggedElement = null; // Clear the reference
+                        }
                     });
                 }
 
@@ -213,16 +358,16 @@
                     });
                 }
 
-                // Initial population of the word pool
+                // Initial population of the word pool when the page loads
                 populateWordPool();
 
-                // Dragover event listener for the drop zone
+                // --- Desktop Drop Zone Event Listeners ---
                 dropZone.addEventListener('dragover', (e) => {
                     e.preventDefault(); // Prevent default to allow drop
                     dropZone.classList.add('drag-over'); // Add class for visual feedback (highlight)
 
                     // If an element is being dragged and it's coming from or going into the drop zone itself
-                    if (currentDraggedElement) {
+                    if (currentDraggedElement && currentDraggedElement.parentNode !== dropZone) { // Only reorder if coming from pool
                         const afterElement = getDragAfterElement(dropZone, e.clientX); // Determine insertion point
                         const draggable = currentDraggedElement;
 
@@ -232,15 +377,21 @@
                         } else {
                             dropZone.insertBefore(draggable, afterElement); // Insert before the detected element
                         }
+                    } else if (currentDraggedElement && currentDraggedElement.parentNode === dropZone) {
+                         // If reordering within the same drop zone, simply move the element
+                         const afterElement = getDragAfterElement(dropZone, e.clientX);
+                         if (afterElement == null) {
+                            dropZone.appendChild(currentDraggedElement);
+                         } else {
+                            dropZone.insertBefore(currentDraggedElement, afterElement);
+                         }
                     }
                 });
 
-                // Dragleave event listener for the drop zone
                 dropZone.addEventListener('dragleave', () => {
                     dropZone.classList.remove('drag-over'); // Remove highlight when drag leaves
                 });
 
-                // Drop event listener for the drop zone
                 dropZone.addEventListener('drop', (e) => {
                     e.preventDefault(); // Prevent default browser drop behavior
                     dropZone.classList.remove('drag-over'); // Remove highlight
@@ -250,17 +401,13 @@
                         if (dropZone.textContent.trim() === 'Drag words here...') {
                             dropZone.innerHTML = '';
                         }
-
-                        // If the dragged element was initially from the word pool, append it
-                        // Reordering within the drop zone is handled by dragover moving the element
-                        if (currentDraggedElement.parentNode === wordPool) {
-                            dropZone.appendChild(currentDraggedElement);
-                            currentDraggedElement.classList.remove('cursor-grab');
-                            currentDraggedElement.classList.add('cursor-move');
-                        }
-                        // The currentDraggedElement reference is cleared in the dragend event
+                        // The element has already been moved to the drop zone during dragover/touchmove.
+                        // We just need to reset its cursor and ensure it's not "grabbing" anymore.
+                        currentDraggedElement.classList.remove('cursor-grab');
+                        currentDraggedElement.classList.add('cursor-move');
                     }
                 });
+
 
                 // Event listener for the Check Answer button
                 checkButton.addEventListener('click', () => {
@@ -270,28 +417,36 @@
                     const constructedSentence = arrangedWords.join(' ');
                     const correctSentence = sentenceData.correctOrder;
 
-                    // Normalize sentences for comparison (lowercase, single spaces, trim)
-                    const normalizedConstructed = constructedSentence.replace(/\s+/g, ' ').trim().toLowerCase();
-                    const normalizedCorrect = correctSentence.replace(/\s+/g, ' ').trim().toLowerCase();
+                    // Normalize sentences for comparison (lowercase, single spaces, trim, remove punctuation for flexible check)
+                    // For a strict check, remove .replace(/[.,!?;:]/g, '')
+                    const normalizedConstructed = constructedSentence.replace(/\s+/g, ' ').trim().toLowerCase().replace(/[.,!?;:]/g, '');
+                    const normalizedCorrect = correctSentence.replace(/\s+/g, ' ').trim().toLowerCase().replace(/[.,!?;:]/g, '');
+
+                    // Clear previous feedback classes and messages
+                    feedbackMessage.classList.remove('text-green-600', 'text-red-600', 'correct', 'incorrect');
+                    feedbackMessage.textContent = ''; // Clear content to prevent animation re-trigger issues
 
                     // Compare and provide feedback
                     if (normalizedConstructed === normalizedCorrect) {
-                        feedbackMessage.textContent = 'Correct! Well done.';
-                        feedbackMessage.classList.remove('text-red-600');
-                        feedbackMessage.classList.add('text-green-600');
+                        feedbackMessage.textContent = '✅ Correct! Well done.';
+                        feedbackMessage.classList.add('text-green-600', 'correct');
                     } else {
-                        feedbackMessage.textContent = 'Incorrect. Try again!';
-                        feedbackMessage.classList.remove('text-green-600');
-                        feedbackMessage.classList.add('text-red-600');
+                        feedbackMessage.textContent = '❌ Incorrect. Try again!';
+                        feedbackMessage.classList.add('text-red-600', 'incorrect');
                     }
+
+                    // Remove animation classes after animation completes to allow re-triggering
+                    feedbackMessage.addEventListener('animationend', () => {
+                        feedbackMessage.classList.remove('correct', 'incorrect');
+                    }, { once: true });
                 });
 
                 // Event listener for the Reset button
                 resetButton.addEventListener('click', () => {
-                    dropZone.innerHTML = 'Drag words here...'; // Reset drop zone placeholder
+                    dropZone.innerHTML = '<div class="text-gray-600 text-base sm:text-xl font-medium">Drag words here...</div>'; // Reset drop zone placeholder
                     dropZone.classList.remove('drag-over'); // Ensure highlight is off
                     feedbackMessage.textContent = ''; // Clear feedback message
-                    feedbackMessage.classList.remove('text-green-600', 'text-red-600'); // Remove feedback colors
+                    feedbackMessage.classList.remove('text-green-600', 'text-red-600', 'correct', 'incorrect'); // Remove feedback colors and animation classes
                     populateWordPool(); // Repopulate and shuffle words in the word pool
                 });
             });
