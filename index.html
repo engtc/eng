@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inverted Sentences Practice</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .draggable-word {
+            user-select: none; /* Prevent text selection during drag */
+            transition: all 0.2s ease-in-out;
+        }
+        .drop-zone.drag-over {
+            background-color: #e0f2fe; /* Lighter blue when dragging over */
+            border-color: #90caf9; /* Darker border */
+        }
+        /* Custom styles for shadow and subtle hover effects */
+        .draggable-word {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        .draggable-word:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .check-button, .reset-button {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+        .check-button:hover, .reset-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="p-6">
+
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 sm:p-10 my-8">
+        <h1 class="text-4xl font-extrabold text-center text-indigo-800 mb-8 tracking-tight">
+            Inverted Sentences Practice
+        </h1>
+        <p class="text-xl text-gray-700 text-center mb-10 leading-relaxed">
+            Drag and drop the words into the correct order to form the inverted sentences.
+            Use the "Check Answer" button to see if you're right, or "Reset" to try again.
+        </p>
+
+        <!-- Container for all sentence sections -->
+        <div class="space-y-10">
+
+            <!-- Sentence 1 -->
+            <div id="sentence1" class="p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-md">
+                <h3 class="text-2xl font-bold mb-4 text-indigo-700">Sentence 1: Start with "Rarely"</h3>
+                <div class="word-pool flex flex-wrap gap-3 mb-5 p-4 bg-white border border-dashed border-gray-300 rounded-lg min-h-[80px] items-center" data-correct-order="Rarely do we get the chance to witness such natural beauty.">
+                    <!-- Words will be shuffled and inserted here by JS -->
+                </div>
+                <div class="drop-zone flex flex-wrap gap-3 min-h-[80px] p-4 bg-blue-50 border border-blue-300 rounded-lg items-center justify-start text-gray-600 text-xl font-medium">
+                    Drag words here...
+                </div>
+                <div class="flex items-center mt-6">
+                    <button class="check-button bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg mr-3">Check Answer</button>
+                    <button class="reset-button bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg">Reset</button>
+                </div>
+                <p class="feedback-message mt-4 text-lg font-semibold"></p>
+            </div>
+
+            <!-- Sentence 2 -->
+            <div id="sentence2" class="p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-md">
+                <h3 class="text-2xl font-bold mb-4 text-indigo-700">Sentence 2: Start with "Never have I"</h3>
+                <div class="word-pool flex flex-wrap gap-3 mb-5 p-4 bg-white border border-dashed border-gray-300 rounded-lg min-h-[80px] items-center" data-correct-order="Never have I heard such an inspiring speech.">
+                    <!-- Words will be shuffled and inserted here by JS -->
+                </div>
+                <div class="drop-zone flex flex-wrap gap-3 min-h-[80px] p-4 bg-blue-50 border border-blue-300 rounded-lg items-center justify-start text-gray-600 text-xl font-medium">
+                    Drag words here...
+                </div>
+                <div class="flex items-center mt-6">
+                    <button class="check-button bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg mr-3">Check Answer</button>
+                    <button class="reset-button bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg">Reset</button>
+                </div>
+                <p class="feedback-message mt-4 text-lg font-semibold"></p>
+            </div>
+
+            <!-- Sentence 3 -->
+            <div id="sentence3" class="p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-md">
+                <h3 class="text-2xl font-bold mb-4 text-indigo-700">Sentence 3: Start with "Only if"</h3>
+                <div class="word-pool flex flex-wrap gap-3 mb-5 p-4 bg-white border border-dashed border-gray-300 rounded-lg min-h-[80px] items-center" data-correct-order="Only if you study hard will you pass the final exam.">
+                    <!-- Words will be shuffled and inserted here by JS -->
+                </div>
+                <div class="drop-zone flex flex-wrap gap-3 min-h-[80px] p-4 bg-blue-50 border border-blue-300 rounded-lg items-center justify-start text-gray-600 text-xl font-medium">
+                    Drag words here...
+                </div>
+                <div class="flex items-center mt-6">
+                    <button class="check-button bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg mr-3">Check Answer</button>
+                    <button class="reset-button bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg">Reset</button>
+                </div>
+                <p class="feedback-message mt-4 text-lg font-semibold"></p>
+            </div>
+
+            <!-- Sentence 4 -->
+            <div id="sentence4" class="p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-md">
+                <h3 class="text-2xl font-bold mb-4 text-indigo-700">Sentence 4: Start with "Had"</h3>
+                <div class="word-pool flex flex-wrap gap-3 mb-5 p-4 bg-white border border-dashed border-gray-300 rounded-lg min-h-[80px] items-center" data-correct-order="Had I known about the meeting, I would have attended.">
+                    <!-- Words will be shuffled and inserted here by JS -->
+                </div>
+                <div class="drop-zone flex flex-wrap gap-3 min-h-[80px] p-4 bg-blue-50 border border-blue-300 rounded-lg items-center justify-start text-gray-600 text-xl font-medium">
+                    Drag words here...
+                </div>
+                <div class="flex items-center mt-6">
+                    <button class="check-button bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg mr-3">Check Answer</button>
+                    <button class="reset-button bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg">Reset</button>
+                </div>
+                <p class="feedback-message mt-4 text-lg font-semibold"></p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Define the sentences and their words
+        const sentencesData = [
+            {
+                id: 'sentence1',
+                correctOrder: 'Rarely do we get the chance to witness such natural beauty.',
+                words: ['Rarely', 'do', 'we', 'get', 'the', 'chance', 'to', 'witness', 'such', 'natural', 'beauty.']
+            },
+            {
+                id: 'sentence2',
+                correctOrder: 'Never have I heard such an inspiring speech.',
+                words: ['Never', 'have', 'I', 'heard', 'such', 'an', 'inspiring', 'speech.']
+            },
+            {
+                id: 'sentence3',
+                correctOrder: 'Only if you study hard will you pass the final exam.',
+                words: ['Only', 'if', 'you', 'study', 'hard', 'will', 'you', 'pass', 'the', 'final', 'exam.']
+            },
+            {
+                id: 'sentence4',
+                correctOrder: 'Had I known about the meeting, I would have attended.',
+                words: ['Had', 'I', 'known', 'about', 'the', 'meeting,', 'I', 'would', 'have', 'attended.']
+            }
+        ];
+
+        // Utility function to shuffle an array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Function to find the element after which the dragged element should be inserted
+        function getDragAfterElement(container, x) {
+            // Get all draggable words in the container that are not the one currently being dragged
+            const draggableElements = [...container.querySelectorAll('.draggable-word:not(.opacity-50)')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                // Calculate the horizontal offset from the center of the child element
+                const offset = x - box.left - box.width / 2;
+                // If the offset is negative and closer to 0 than the current closest, it's the element to insert after
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: -Number.POSITIVE_INFINITY }).element; // Initialize with negative infinity to find the closest negative offset
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Iterate over each sentence configuration
+            sentencesData.forEach(sentenceData => {
+                const sentenceContainer = document.getElementById(sentenceData.id);
+                const wordPool = sentenceContainer.querySelector('.word-pool');
+                const dropZone = sentenceContainer.querySelector('.drop-zone');
+                const checkButton = sentenceContainer.querySelector('.check-button');
+                const resetButton = sentenceContainer.querySelector('.reset-button');
+                const feedbackMessage = sentenceContainer.querySelector('.feedback-message');
+
+                // Variable to store the currently dragged DOM element
+                let currentDraggedElement = null;
+
+                // Function to make a word element draggable and attach event listeners
+                function makeWordDraggable(wordElement) {
+                    wordElement.setAttribute('draggable', 'true');
+                    wordElement.classList.add('draggable-word', 'px-3', 'py-1', 'bg-blue-200', 'text-blue-800', 'rounded-full', 'cursor-grab', 'shadow-sm', 'hover:bg-blue-300');
+
+                    wordElement.addEventListener('dragstart', (e) => {
+                        currentDraggedElement = e.target; // Store the reference to the dragged element
+                        e.dataTransfer.effectAllowed = 'move'; // Define the type of drag operation
+                        e.target.classList.add('opacity-50', 'border-2', 'border-blue-500'); // Add visual feedback for dragging
+                    });
+
+                    wordElement.addEventListener('dragend', (e) => {
+                        e.target.classList.remove('opacity-50', 'border-2', 'border-blue-500'); // Remove visual feedback
+                        currentDraggedElement = null; // Clear the reference
+                    });
+                }
+
+                // Function to populate the word pool with shuffled words
+                function populateWordPool() {
+                    wordPool.innerHTML = ''; // Clear existing words
+                    const shuffledWords = shuffleArray([...sentenceData.words]); // Create a copy to shuffle
+                    shuffledWords.forEach(wordText => {
+                        const wordElement = document.createElement('div');
+                        wordElement.textContent = wordText;
+                        makeWordDraggable(wordElement); // Make each new word element draggable
+                        wordPool.appendChild(wordElement);
+                    });
+                }
+
+                // Initial population of the word pool
+                populateWordPool();
+
+                // Dragover event listener for the drop zone
+                dropZone.addEventListener('dragover', (e) => {
+                    e.preventDefault(); // Prevent default to allow drop
+                    dropZone.classList.add('drag-over'); // Add class for visual feedback (highlight)
+
+                    // If an element is being dragged and it's coming from or going into the drop zone itself
+                    if (currentDraggedElement) {
+                        const afterElement = getDragAfterElement(dropZone, e.clientX); // Determine insertion point
+                        const draggable = currentDraggedElement;
+
+                        // Perform visual reordering during dragover
+                        if (afterElement == null) {
+                            dropZone.appendChild(draggable); // Append to the end if no specific element is found after
+                        } else {
+                            dropZone.insertBefore(draggable, afterElement); // Insert before the detected element
+                        }
+                    }
+                });
+
+                // Dragleave event listener for the drop zone
+                dropZone.addEventListener('dragleave', () => {
+                    dropZone.classList.remove('drag-over'); // Remove highlight when drag leaves
+                });
+
+                // Drop event listener for the drop zone
+                dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault(); // Prevent default browser drop behavior
+                    dropZone.classList.remove('drag-over'); // Remove highlight
+
+                    if (currentDraggedElement) {
+                        // If the drop zone contains the "Drag words here..." placeholder, clear it
+                        if (dropZone.textContent.trim() === 'Drag words here...') {
+                            dropZone.innerHTML = '';
+                        }
+
+                        // If the dragged element was initially from the word pool, append it
+                        // Reordering within the drop zone is handled by dragover moving the element
+                        if (currentDraggedElement.parentNode === wordPool) {
+                            dropZone.appendChild(currentDraggedElement);
+                            currentDraggedElement.classList.remove('cursor-grab');
+                            currentDraggedElement.classList.add('cursor-move');
+                        }
+                        // The currentDraggedElement reference is cleared in the dragend event
+                    }
+                });
+
+                // Event listener for the Check Answer button
+                checkButton.addEventListener('click', () => {
+                    // Get the text content of all words currently in the drop zone
+                    const arrangedWords = Array.from(dropZone.children).map(word => word.textContent.trim());
+                    // Join them to form the constructed sentence
+                    const constructedSentence = arrangedWords.join(' ');
+                    const correctSentence = sentenceData.correctOrder;
+
+                    // Normalize sentences for comparison (lowercase, single spaces, trim)
+                    const normalizedConstructed = constructedSentence.replace(/\s+/g, ' ').trim().toLowerCase();
+                    const normalizedCorrect = correctSentence.replace(/\s+/g, ' ').trim().toLowerCase();
+
+                    // Compare and provide feedback
+                    if (normalizedConstructed === normalizedCorrect) {
+                        feedbackMessage.textContent = 'Correct! Well done.';
+                        feedbackMessage.classList.remove('text-red-600');
+                        feedbackMessage.classList.add('text-green-600');
+                    } else {
+                        feedbackMessage.textContent = 'Incorrect. Try again!';
+                        feedbackMessage.classList.remove('text-green-600');
+                        feedbackMessage.classList.add('text-red-600');
+                    }
+                });
+
+                // Event listener for the Reset button
+                resetButton.addEventListener('click', () => {
+                    dropZone.innerHTML = 'Drag words here...'; // Reset drop zone placeholder
+                    dropZone.classList.remove('drag-over'); // Ensure highlight is off
+                    feedbackMessage.textContent = ''; // Clear feedback message
+                    feedbackMessage.classList.remove('text-green-600', 'text-red-600'); // Remove feedback colors
+                    populateWordPool(); // Repopulate and shuffle words in the word pool
+                });
+            });
+        });
+    </script>
+</body>
+</html>
