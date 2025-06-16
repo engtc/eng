@@ -23,7 +23,7 @@
             opacity: 0.7;
             transform: scale(1.05);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
-            position: absolute; /* Allows for dynamic positioning during touchmove */
+            position: fixed; /* Changed to fixed for more stable dragging across viewport */
             z-index: 1000; /* Ensure it stays on top */
             cursor: grabbing;
         }
@@ -257,7 +257,12 @@
                     // --- Touch Events for Mobile Drag and Drop ---
                     wordElement.addEventListener('touchstart', (e) => {
                         e.preventDefault(); // Prevent text selection and default touch actions (like scrolling)
-                        currentDraggedElement = e.target; // Store the reference
+
+                        // Robustly get the draggable word element, even if touch starts on text node inside it
+                        let targetWord = e.target.closest('.draggable-word');
+                        if (!targetWord) return; // Should not happen if event listener is correctly on wordElement
+
+                        currentDraggedElement = targetWord;
                         currentDraggedElement.classList.add('is-dragging');
 
                         // Get the initial touch position
@@ -270,7 +275,7 @@
                         initialElementY = rect.top;
 
                         // Set the element to fixed position relative to viewport for dragging
-                        currentDraggedElement.style.position = 'fixed';
+                        // This allows it to move freely with the finger without affecting layout of other elements
                         currentDraggedElement.style.left = initialElementX + 'px';
                         currentDraggedElement.style.top = initialElementY + 'px';
                     });
@@ -287,7 +292,7 @@
                             currentDraggedElement.style.top = (initialElementY + deltaY) + 'px';
 
                             // Simulate dragover for touch: check if over a drop zone
-                            // Check all drop zones, though in this app there's only one relevant per sentence
+                            // This ensures words reorder visually during touchmove
                             document.querySelectorAll('.drop-zone').forEach(dz => {
                                 const rect = dz.getBoundingClientRect();
                                 const touchX = e.touches[0].clientX;
@@ -297,7 +302,7 @@
                                     touchY >= rect.top && touchY <= rect.bottom) {
                                     dz.classList.add('drag-over');
 
-                                    // If dragging over the correct drop zone, reorder elements
+                                    // Reorder elements visually within the drop zone
                                     const afterElement = getDragAfterElement(dz, touchX);
                                     if (afterElement == null) {
                                         dz.appendChild(currentDraggedElement);
@@ -325,19 +330,19 @@
 
                             if (touchX >= dropZoneRect.left && touchX <= dropZoneRect.right &&
                                 touchY >= dropZoneRect.top && touchY <= dropZoneRect.bottom) {
-                                // Clear placeholder if present
+                                // Dropped into the drop zone
                                 if (dropZone.textContent.trim() === 'Drag words here...') {
-                                    dropZone.innerHTML = '';
+                                    dropZone.innerHTML = ''; // Clear placeholder
                                 }
-                                // The element is already visually in the correct spot due to touchmove, no need to append.
-                                // Just remove the cursor change class
                                 currentDraggedElement.classList.remove('cursor-grab');
                                 currentDraggedElement.classList.add('cursor-move');
+                                // Element is already in the drop zone due to touchmove, no need to append
                             } else {
-                                // If dropped outside, return to its original container (wordPool or previous dropZone)
-                                // For simplicity, we'll return it to the wordPool for now if dropped anywhere invalid.
-                                // A more complex implementation might remember its original parent.
+                                // Dropped outside the drop zone, revert to word pool
+                                // This handles cases where a word is dragged out of the drop zone as well
                                 wordPool.appendChild(currentDraggedElement);
+                                currentDraggedElement.classList.remove('cursor-move');
+                                currentDraggedElement.classList.add('cursor-grab');
                             }
                             // Ensure the drag-over class is removed from any drop zone
                             document.querySelectorAll('.drop-zone').forEach(dz => dz.classList.remove('drag-over'));
@@ -366,19 +371,8 @@
                     e.preventDefault(); // Prevent default to allow drop
                     dropZone.classList.add('drag-over'); // Add class for visual feedback (highlight)
 
-                    // If an element is being dragged and it's coming from or going into the drop zone itself
-                    if (currentDraggedElement && currentDraggedElement.parentNode !== dropZone) { // Only reorder if coming from pool
-                        const afterElement = getDragAfterElement(dropZone, e.clientX); // Determine insertion point
-                        const draggable = currentDraggedElement;
-
-                        // Perform visual reordering during dragover
-                        if (afterElement == null) {
-                            dropZone.appendChild(draggable); // Append to the end if no specific element is found after
-                        } else {
-                            dropZone.insertBefore(draggable, afterElement); // Insert before the detected element
-                        }
-                    } else if (currentDraggedElement && currentDraggedElement.parentNode === dropZone) {
-                         // If reordering within the same drop zone, simply move the element
+                    if (currentDraggedElement) {
+                         // If reordering within the same drop zone or bringing from word pool
                          const afterElement = getDragAfterElement(dropZone, e.clientX);
                          if (afterElement == null) {
                             dropZone.appendChild(currentDraggedElement);
@@ -402,7 +396,7 @@
                             dropZone.innerHTML = '';
                         }
                         // The element has already been moved to the drop zone during dragover/touchmove.
-                        // We just need to reset its cursor and ensure it's not "grabbing" anymore.
+                        // We just need to reset its cursor.
                         currentDraggedElement.classList.remove('cursor-grab');
                         currentDraggedElement.classList.add('cursor-move');
                     }
@@ -412,13 +406,19 @@
                 // Event listener for the Check Answer button
                 checkButton.addEventListener('click', () => {
                     // Get the text content of all words currently in the drop zone
-                    const arrangedWords = Array.from(dropZone.children).map(word => word.textContent.trim());
+                    const arrangedWords = Array.from(dropZone.children).map(word => {
+                        // Exclude the placeholder text from the calculation
+                        if (word.classList.contains('text-gray-600') && word.textContent.trim() === 'Drag words here...') {
+                            return ''; // Return empty string for the placeholder
+                        }
+                        return word.textContent.trim();
+                    }).filter(word => word !== ''); // Filter out any empty strings from placeholder
+
                     // Join them to form the constructed sentence
                     const constructedSentence = arrangedWords.join(' ');
                     const correctSentence = sentenceData.correctOrder;
 
                     // Normalize sentences for comparison (lowercase, single spaces, trim, remove punctuation for flexible check)
-                    // For a strict check, remove .replace(/[.,!?;:]/g, '')
                     const normalizedConstructed = constructedSentence.replace(/\s+/g, ' ').trim().toLowerCase().replace(/[.,!?;:]/g, '');
                     const normalizedCorrect = correctSentence.replace(/\s+/g, ' ').trim().toLowerCase().replace(/[.,!?;:]/g, '');
 
@@ -443,7 +443,8 @@
 
                 // Event listener for the Reset button
                 resetButton.addEventListener('click', () => {
-                    dropZone.innerHTML = '<div class="text-gray-600 text-base sm:text-xl font-medium">Drag words here...</div>'; // Reset drop zone placeholder
+                    // Reset drop zone placeholder. Ensure it's a div so it doesn't interfere with map() for arrangedWords.
+                    dropZone.innerHTML = '<div class="text-gray-600 text-base sm:text-xl font-medium">Drag words here...</div>';
                     dropZone.classList.remove('drag-over'); // Ensure highlight is off
                     feedbackMessage.textContent = ''; // Clear feedback message
                     feedbackMessage.classList.remove('text-green-600', 'text-red-600', 'correct', 'incorrect'); // Remove feedback colors and animation classes
@@ -454,3 +455,4 @@
     </script>
 </body>
 </html>
+
