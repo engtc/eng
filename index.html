@@ -1,458 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inverted Sentences Practice</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5;
-        }
-        /* Styles for draggable words and drop zones */
-        .draggable-word {
-            user-select: none; /* Prevent text selection during drag/touch */
-            transition: all 0.2s ease-in-out;
-            touch-action: none; /* Prevent browser default touch actions like scrolling */
-        }
-        /* Visual feedback for dragging */
-        .draggable-word.is-dragging {
-            opacity: 0.7;
-            transform: scale(1.05);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
-            position: fixed; /* Changed to fixed for more stable dragging across viewport */
-            z-index: 1000; /* Ensure it stays on top */
-            cursor: grabbing;
-        }
-        .drop-zone {
-            transition: background-color 0.2s ease, border-color 0.2s ease;
-        }
-        .drop-zone.drag-over {
-            background-color: #e0f2fe; /* Lighter blue when dragging over */
-            border-color: #90caf9; /* Darker border */
-        }
-        /* Custom styles for shadow and subtle hover effects */
-        .draggable-word {
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-        }
-        .draggable-word:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        .check-button, .reset-button {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: all 0.3s ease;
-        }
-        .check-button:hover, .reset-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        /* Feedback animations */
-        .feedback-message.correct {
-            animation: fadeInOut 2s forwards;
-        }
-        .feedback-message.incorrect {
-            animation: shake 0.5s;
-        }
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: translateY(10px); }
-            20% { opacity: 1; transform: translateY(0); }
-            80% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-10px); }
-        }
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            50% { transform: translateX(5px); }
-            75% { transform: translateX(-5px); }
-            100% { transform: translateX(0); }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inverted Sentences Puzzle</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%);
+      color: #333;
+      margin: 0;
+      padding: 20px;
+      user-select: none;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      color: #3E1F47;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    .question {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
+      padding: 20px;
+    }
+    .prompt {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+    .starter {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #006A71;
+      margin-bottom: 15px;
+    }
+    .answer-area {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 50px;
+      padding: 10px;
+      background: #F0F7F4;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      transition: background 0.3s;
+    }
+    .answer-slot {
+      flex: 1 1 20%;
+      min-width: 80px;
+      padding: 10px;
+      border: 2px dashed #A0A0A0;
+      border-radius: 6px;
+      background: #fff;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .answer-slot.hovered {
+      background: #D6FFF1;
+      border-color: #00BFA6;
+    }
+    .word-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .word {
+      padding: 8px 14px;
+      background: #FFE0A3;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: grab;
+      font-weight: 500;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .word:active {
+      transform: scale(1.1);
+      background: #FFD25A;
+      cursor: grabbing;
+    }
+    .word:hover {
+      background: #FFDFA5;
+    }
+    button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-right: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .check-btn {
+      background: #4CAF50;
+      color: #fff;
+    }
+    .check-btn:hover {
+      background: #45A049;
+    }
+    .reset-btn {
+      background: #F44336;
+      color: #fff;
+    }
+    .reset-btn:hover {
+      background: #E53935;
+    }
+    .feedback {
+      font-size: 1.1rem;
+      margin-top: 12px;
+      min-height: 1.4rem;
+    }
+    .feedback.correct {
+      color: #2E7D32;
+    }
+    .feedback.incorrect {
+      color: #C62828;
+    }
+    @media (max-width: 600px) {
+      .answer-slot { flex: 1 1 45%; }
+      .word { flex: 1 1 45%; }
+    }
+  </style>
 </head>
-<body class="p-4 sm:p-6">
+<body>
+  <h1>Rearrange the Inverted Sentences!</h1>
+  <div id="questions-container"></div>
 
-    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 sm:p-8 my-6">
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-center text-indigo-800 mb-6 tracking-tight">
-            Inverted Sentences Practice
-        </h1>
-        <p class="text-base sm:text-xl text-gray-700 text-center mb-8 leading-relaxed">
-            Drag and drop the words into the correct order to form the inverted sentences.
-            Pay attention to the explanations for each sentence!
-        </p>
+  <script>
+    const questions = [
+      { starter: 'Rarely', words: ['do', 'we', 'get', 'the', 'chance', 'to', 'witness', 'such', 'natural', 'beauty.'], answer: ['do','we','get','the','chance','to','witness','such','natural','beauty.'] },
+      { starter: 'Never have I', words: ['heard', 'such', 'an', 'inspiring', 'speech.'], answer: ['heard','such','an','inspiring','speech.'] },
+      { starter: 'Only if', words: ['you', 'study', 'hard', 'will', 'you', 'pass', 'the', 'final', 'exam.'], answer: ['you','study','hard','will','you','pass','the','final','exam.'] },
+      { starter: 'Had', words: ['I', 'known', 'about', 'the', 'meeting,', 'I', 'would', 'have', 'attended.'], answer: ['I','known','about','the','meeting,','I','would','have','attended.'] }
+    ];
 
-        <!-- Container for all sentence sections -->
-        <div class="space-y-8 sm:space-y-10">
+    function shuffle(arr) { return arr.slice().sort(() => Math.random() - 0.5); }
 
-            <!-- Sentence 1 -->
-            <div id="sentence1" class="p-5 sm:p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-md">
-                <h3 class="text-xl sm:text-2xl font-bold mb-3 text-indigo-700">Sentence 1: Start with "Rarely"</h3>
-                <p class="text-sm sm:text-base text-gray-600 mb-4 bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-md">
-                    <strong class="text-yellow-800">Explanation:</strong> When negative adverbs like "Rarely" start a sentence, we often invert the subject and auxiliary verb for emphasis.
-                </p>
-                <div class="word-pool flex flex-wrap gap-2 sm:gap-3 mb-4 p-3 sm:p-4 bg-white border border-dashed border-gray-300 rounded-lg min-h-[60px] sm:min-h-[80px] items-center" data-correct-order="Rarely do we get the chance to witness such natural beauty.">
-                    <!-- Words will be shuffled and inserted here by JS -->
-                </div>
-                <div class="drop-zone flex flex-wrap gap-2 sm:gap-3 min-h-[60px] sm:min-h-[80px] p-3 sm:p-4 bg-blue-50 border border-blue-300 rounded-lg items-center justify-start text-gray-600 text-base sm:text-xl font-medium">
-                    Drag words here...
-                </div>
-                <div class="flex flex-col sm:flex-row items-center mt-5">
-                    <button class="check-button bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg mb-2 sm:mb-0 sm:mr-3 w-full sm:w-auto text-sm sm:text-base">Check Answer</button>
-                    <button class="reset-button bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg w-full sm:w-auto text-sm sm:text-base">Reset</button>
-                </div>
-                <p class="feedback-message mt-3 sm:mt-4 text-base sm:text-lg font-semibold"></p>
-            </div>
+    function createQuestion(q, idx) {
+      const container = document.createElement('div'); container.className = 'question';
+      container.innerHTML = `
+        <div class="prompt">Arrange the words:</div>
+        <div class="starter">${q.starter}</div>
+        <div class="answer-area" data-index="${idx}"></div>
+        <div class="word-bank" data-index="${idx}"></div>
+        <button class="check-btn" data-action="check" data-index="${idx}">Check</button>
+        <button class="reset-btn" data-action="reset" data-index="${idx}">Reset</button>
+        <div class="feedback" data-index="${idx}"></div>
+      `;
+      document.getElementById('questions-container').appendChild(container);
 
-            <!-- Sentence 2 -->
-            <div id="sentence2" class="p-5 sm:p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-md">
-                <h3 class="text-xl sm:text-2xl font-bold mb-3 text-indigo-700">Sentence 2: Start with "Never have I"</h3>
-                <p class="text-sm sm:text-base text-gray-600 mb-4 bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-md">
-                    <strong class="text-yellow-800">Explanation:</strong> Similar to "Rarely," "Never" is a negative adverb that triggers inversion of the auxiliary verb ("have") and the subject ("I") when placed at the beginning of a sentence.
-                </p>
-                <div class="word-pool flex flex-wrap gap-2 sm:gap-3 mb-4 p-3 sm:p-4 bg-white border border-dashed border-gray-300 rounded-lg min-h-[60px] sm:min-h-[80px] items-center" data-correct-order="Never have I heard such an inspiring speech.">
-                    <!-- Words will be shuffled and inserted here by JS -->
-                </div>
-                <div class="drop-zone flex flex-wrap gap-2 sm:gap-3 min-h-[60px] sm:min-h-[80px] p-3 sm:p-4 bg-blue-50 border border-blue-300 rounded-lg items-center justify-start text-gray-600 text-base sm:text-xl font-medium">
-                    Drag words here...
-                </div>
-                <div class="flex flex-col sm:flex-row items-center mt-5">
-                    <button class="check-button bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg mb-2 sm:mb-0 sm:mr-3 w-full sm:w-auto text-sm sm:text-base">Check Answer</button>
-                    <button class="reset-button bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg w-full sm:w-auto text-sm sm:text-base">Reset</button>
-                </div>
-                <p class="feedback-message mt-3 sm:mt-4 text-base sm:text-lg font-semibold"></p>
-            </div>
+      const bank = container.querySelector('.word-bank');
+      const slots = container.querySelector('.answer-area');
 
-            <!-- Sentence 3 -->
-            <div id="sentence3" class="p-5 sm:p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-md">
-                <h3 class="text-xl sm:text-2xl font-bold mb-3 text-indigo-700">Sentence 3: Start with "Only if"</h3>
-                <p class="text-sm sm:text-base text-gray-600 mb-4 bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-md">
-                    <strong class="text-yellow-800">Explanation:</strong> When a phrase starting with "Only" (like "Only if," "Only then," "Only after") is placed at the beginning of a sentence for emphasis, it causes inversion in the main clause.
-                </p>
-                <div class="word-pool flex flex-wrap gap-2 sm:gap-3 mb-4 p-3 sm:p-4 bg-white border border-dashed border-gray-300 rounded-lg min-h-[60px] sm:min-h-[80px] items-center" data-correct-order="Only if you study hard will you pass the final exam.">
-                    <!-- Words will be shuffled and inserted here by JS -->
-                </div>
-                <div class="drop-zone flex flex-wrap gap-2 sm:gap-3 min-h-[60px] sm:min-h-[80px] p-3 sm:p-4 bg-blue-50 border border-blue-300 rounded-lg items-center justify-start text-gray-600 text-base sm:text-xl font-medium">
-                    Drag words here...
-                </div>
-                <div class="flex flex-col sm:flex-row items-center mt-5">
-                    <button class="check-button bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg mb-2 sm:mb-0 sm:mr-3 w-full sm:w-auto text-sm sm:text-base">Check Answer</button>
-                    <button class="reset-button bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg w-full sm:w-auto text-sm sm:text-base">Reset</button>
-                </div>
-                <p class="feedback-message mt-3 sm:mt-4 text-base sm:text-lg font-semibold"></p>
-            </div>
+      for (let i = 0; i < q.words.length; i++) {
+        const slot = document.createElement('div'); slot.className = 'answer-slot'; slot.dataset.slot = i;
+        slot.addEventListener('dragover', dragOverHandler);
+        slot.addEventListener('dragleave', dragLeaveHandler);
+        slot.addEventListener('drop', dropHandler);
+        slots.appendChild(slot);
+      }
 
-            <!-- Sentence 4 -->
-            <div id="sentence4" class="p-5 sm:p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-md">
-                <h3 class="text-xl sm:text-2xl font-bold mb-3 text-indigo-700">Sentence 4: Start with "Had"</h3>
-                <p class="text-sm sm:text-base text-gray-600 mb-4 bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-md">
-                    <strong class="text-yellow-800">Explanation:</strong> In conditional sentences (often type 3) that omit "if," the auxiliary verb ("Had") is placed at the beginning of the clause, creating an inverted structure.
-                </p>
-                <div class="word-pool flex flex-wrap gap-2 sm:gap-3 mb-4 p-3 sm:p-4 bg-white border border-dashed border-gray-300 rounded-lg min-h-[60px] sm:min-h-[80px] items-center" data-correct-order="Had I known about the meeting, I would have attended.">
-                    <!-- Words will be shuffled and inserted here by JS -->
-                </div>
-                <div class="drop-zone flex flex-wrap gap-2 sm:gap-3 min-h-[60px] sm:min-h-[80px] p-3 sm:p-4 bg-blue-50 border border-blue-300 rounded-lg items-center justify-start text-gray-600 text-base sm:text-xl font-medium">
-                    Drag words here...
-                </div>
-                <div class="flex flex-col sm:flex-row items-center mt-5">
-                    <button class="check-button bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg mb-2 sm:mb-0 sm:mr-3 w-full sm:w-auto text-sm sm:text-base">Check Answer</button>
-                    <button class="reset-button bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg w-full sm:w-auto text-sm sm:text-base">Reset</button>
-                </div>
-                <p class="feedback-message mt-3 sm:mt-4 text-base sm:text-lg font-semibold"></p>
-            </div>
+      shuffle(q.words).forEach(word => {
+        const w = document.createElement('div');
+        w.className = 'word'; w.draggable = true; w.textContent = word;
+        w.addEventListener('dragstart', dragStartHandler);
+        w.addEventListener('dragend', dragEndHandler);
+        bank.appendChild(w);
+      });
+    }
 
-        </div>
-    </div>
+    let dragged;
+    const dragStartHandler = function() { dragged = this; setTimeout(() => this.style.display='none', 0); };
+    const dragEndHandler = function() { this.style.display='block'; };
+    const dragOverHandler = function(e) { e.preventDefault(); this.classList.add('hovered'); };
+    const dragLeaveHandler = function() { this.classList.remove('hovered'); };
+    const dropHandler = function(e) { e.preventDefault(); this.classList.remove('hovered'); if(!this.hasChildNodes()) this.appendChild(dragged); };
 
-    <script>
-        // Define the sentences and their words
-        const sentencesData = [
-            {
-                id: 'sentence1',
-                correctOrder: 'Rarely do we get the chance to witness such natural beauty.',
-                words: ['Rarely', 'do', 'we', 'get', 'the', 'chance', 'to', 'witness', 'such', 'natural', 'beauty.']
-            },
-            {
-                id: 'sentence2',
-                correctOrder: 'Never have I heard such an inspiring speech.',
-                words: ['Never', 'have', 'I', 'heard', 'such', 'an', 'inspiring', 'speech.']
-            },
-            {
-                id: 'sentence3',
-                correctOrder: 'Only if you study hard will you pass the final exam.',
-                words: ['Only', 'if', 'you', 'study', 'hard', 'will', 'you', 'pass', 'the', 'final', 'exam.']
-            },
-            {
-                id: 'sentence4',
-                correctOrder: 'Had I known about the meeting, I would have attended.',
-                words: ['Had', 'I', 'known', 'about', 'the', 'meeting,', 'I', 'would', 'have', 'attended.']
-            }
-        ];
+    function checkAnswer(idx) {
+      const q = questions[idx];
+      const slots = document.querySelectorAll(`.answer-area[data-index='${idx}'] .answer-slot`);
+      let correctCount = 0;
+      slots.forEach((slot,i) => {
+        const w = slot.firstChild ? slot.firstChild.textContent : '';
+        if (w === q.answer[i]) { slot.style.borderColor='#2E7D32'; correctCount++; }
+        else { slot.style.borderColor='#C62828'; }
+      });
+      const fb = document.querySelector(`.feedback[data-index='${idx}']`);
+      if (correctCount === q.answer.length) { fb.textContent='Perfect! 🎉'; fb.className='feedback correct'; }
+      else { fb.textContent=`${correctCount} of ${q.answer.length} correct.`; fb.className='feedback incorrect'; }
+    }
 
-        // Utility function to shuffle an array
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
+    function resetQuestion(idx) {
+      const container = document.querySelector(`.question:nth-child(${idx+1})`);
+      const bank = container.querySelector('.word-bank'); bank.innerHTML='';
+      container.querySelectorAll('.answer-slot').forEach(s => { s.innerHTML=''; s.style.borderColor='#A0A0A0'; });
+      container.querySelector(`.feedback[data-index='${idx}']`).textContent='';
+      shuffle(questions[idx].words).forEach(word => {
+        const w = document.createElement('div'); w.className='word'; w.draggable=true; w.textContent=word;
+        w.addEventListener('dragstart', dragStartHandler);
+        w.addEventListener('dragend', dragEndHandler);
+        bank.appendChild(w);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      questions.forEach((q,i) => createQuestion(q,i));
+      document.body.addEventListener('click', e => {
+        if (e.target.tagName==='BUTTON') {
+          const idx = e.target.dataset.index;
+          e.target.dataset.action==='check' ? checkAnswer(idx) : resetQuestion(idx);
         }
-
-        // Function to find the element after which the dragged element should be inserted
-        // This helps in visually reordering elements within a drop zone.
-        function getDragAfterElement(container, x) {
-            // Get all draggable words in the container that are not the one currently being dragged (if any)
-            const draggableElements = [...container.querySelectorAll('.draggable-word:not(.is-dragging)')];
-
-            return draggableElements.reduce((closest, child) => {
-                const box = child.getBoundingClientRect();
-                // Calculate the horizontal offset from the center of the child element
-                const offset = x - box.left - box.width / 2;
-                // If the offset is negative and closer to 0 than the current closest, it's the element to insert after
-                if (offset < 0 && offset > closest.offset) {
-                    return { offset: offset, element: child };
-                } else {
-                    return closest;
-                }
-            }, { offset: -Number.POSITIVE_INFINITY }).element; // Initialize with negative infinity to find the closest negative offset
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // Iterate over each sentence configuration to set up its interactive elements
-            sentencesData.forEach(sentenceData => {
-                const sentenceContainer = document.getElementById(sentenceData.id);
-                const wordPool = sentenceContainer.querySelector('.word-pool');
-                const dropZone = sentenceContainer.querySelector('.drop-zone');
-                const checkButton = sentenceContainer.querySelector('.check-button');
-                const resetButton = sentenceContainer.querySelector('.reset-button');
-                const feedbackMessage = sentenceContainer.querySelector('.feedback-message');
-
-                // Global variable to store the currently dragged DOM element across event listeners
-                let currentDraggedElement = null;
-                // Store initial touch position for calculating movement
-                let initialTouchX = 0;
-                let initialTouchY = 0;
-                // Store initial position of the dragged element relative to the screen
-                let initialElementX = 0;
-                let initialElementY = 0;
-
-                // Function to make a word element draggable and attach event listeners
-                function makeWordDraggable(wordElement) {
-                    wordElement.setAttribute('draggable', 'true'); // For desktop drag-and-drop
-                    wordElement.classList.add('draggable-word', 'px-3', 'py-1', 'bg-blue-200', 'text-blue-800', 'rounded-full', 'cursor-grab', 'shadow-sm', 'hover:bg-blue-300');
-
-                    // --- Desktop Drag and Drop Events ---
-                    wordElement.addEventListener('dragstart', (e) => {
-                        currentDraggedElement = e.target; // Store the reference to the dragged element
-                        e.dataTransfer.effectAllowed = 'move'; // Define the type of drag operation
-                        e.target.classList.add('is-dragging'); // Add visual feedback for dragging
-                    });
-
-                    wordElement.addEventListener('dragend', (e) => {
-                        e.target.classList.remove('is-dragging'); // Remove visual feedback
-                        currentDraggedElement = null; // Clear the reference
-                    });
-
-                    // --- Touch Events for Mobile Drag and Drop ---
-                    wordElement.addEventListener('touchstart', (e) => {
-                        e.preventDefault(); // Prevent text selection and default touch actions (like scrolling)
-
-                        // Robustly get the draggable word element, even if touch starts on text node inside it
-                        let targetWord = e.target.closest('.draggable-word');
-                        if (!targetWord) return; // Should not happen if event listener is correctly on wordElement
-
-                        currentDraggedElement = targetWord;
-                        currentDraggedElement.classList.add('is-dragging');
-
-                        // Get the initial touch position
-                        initialTouchX = e.touches[0].clientX;
-                        initialTouchY = e.touches[0].clientY;
-
-                        // Get the element's current position relative to the viewport
-                        const rect = currentDraggedElement.getBoundingClientRect();
-                        initialElementX = rect.left;
-                        initialElementY = rect.top;
-
-                        // Set the element to fixed position relative to viewport for dragging
-                        // This allows it to move freely with the finger without affecting layout of other elements
-                        currentDraggedElement.style.left = initialElementX + 'px';
-                        currentDraggedElement.style.top = initialElementY + 'px';
-                    });
-
-                    wordElement.addEventListener('touchmove', (e) => {
-                        e.preventDefault(); // Prevent scrolling while dragging
-
-                        if (currentDraggedElement) {
-                            // Calculate new position based on touch movement
-                            const deltaX = e.touches[0].clientX - initialTouchX;
-                            const deltaY = e.touches[0].clientY - initialTouchY;
-
-                            currentDraggedElement.style.left = (initialElementX + deltaX) + 'px';
-                            currentDraggedElement.style.top = (initialElementY + deltaY) + 'px';
-
-                            // Simulate dragover for touch: check if over a drop zone
-                            // This ensures words reorder visually during touchmove
-                            document.querySelectorAll('.drop-zone').forEach(dz => {
-                                const rect = dz.getBoundingClientRect();
-                                const touchX = e.touches[0].clientX;
-                                const touchY = e.touches[0].clientY;
-
-                                if (touchX >= rect.left && touchX <= rect.right &&
-                                    touchY >= rect.top && touchY <= rect.bottom) {
-                                    dz.classList.add('drag-over');
-
-                                    // Reorder elements visually within the drop zone
-                                    const afterElement = getDragAfterElement(dz, touchX);
-                                    if (afterElement == null) {
-                                        dz.appendChild(currentDraggedElement);
-                                    } else {
-                                        dz.insertBefore(currentDraggedElement, afterElement);
-                                    }
-                                } else {
-                                    dz.classList.remove('drag-over');
-                                }
-                            });
-                        }
-                    });
-
-                    wordElement.addEventListener('touchend', (e) => {
-                        if (currentDraggedElement) {
-                            currentDraggedElement.classList.remove('is-dragging');
-                            currentDraggedElement.style.position = ''; // Reset position styles
-                            currentDraggedElement.style.left = '';
-                            currentDraggedElement.style.top = '';
-
-                            // Determine if the word was dropped into the drop zone
-                            const dropZoneRect = dropZone.getBoundingClientRect();
-                            const touchX = e.changedTouches[0].clientX;
-                            const touchY = e.changedTouches[0].clientY;
-
-                            if (touchX >= dropZoneRect.left && touchX <= dropZoneRect.right &&
-                                touchY >= dropZoneRect.top && touchY <= dropZoneRect.bottom) {
-                                // Dropped into the drop zone
-                                if (dropZone.textContent.trim() === 'Drag words here...') {
-                                    dropZone.innerHTML = ''; // Clear placeholder
-                                }
-                                currentDraggedElement.classList.remove('cursor-grab');
-                                currentDraggedElement.classList.add('cursor-move');
-                                // Element is already in the drop zone due to touchmove, no need to append
-                            } else {
-                                // Dropped outside the drop zone, revert to word pool
-                                // This handles cases where a word is dragged out of the drop zone as well
-                                wordPool.appendChild(currentDraggedElement);
-                                currentDraggedElement.classList.remove('cursor-move');
-                                currentDraggedElement.classList.add('cursor-grab');
-                            }
-                            // Ensure the drag-over class is removed from any drop zone
-                            document.querySelectorAll('.drop-zone').forEach(dz => dz.classList.remove('drag-over'));
-                            currentDraggedElement = null; // Clear the reference
-                        }
-                    });
-                }
-
-                // Function to populate the word pool with shuffled words
-                function populateWordPool() {
-                    wordPool.innerHTML = ''; // Clear existing words
-                    const shuffledWords = shuffleArray([...sentenceData.words]); // Create a copy to shuffle
-                    shuffledWords.forEach(wordText => {
-                        const wordElement = document.createElement('div');
-                        wordElement.textContent = wordText;
-                        makeWordDraggable(wordElement); // Make each new word element draggable
-                        wordPool.appendChild(wordElement);
-                    });
-                }
-
-                // Initial population of the word pool when the page loads
-                populateWordPool();
-
-                // --- Desktop Drop Zone Event Listeners ---
-                dropZone.addEventListener('dragover', (e) => {
-                    e.preventDefault(); // Prevent default to allow drop
-                    dropZone.classList.add('drag-over'); // Add class for visual feedback (highlight)
-
-                    if (currentDraggedElement) {
-                         // If reordering within the same drop zone or bringing from word pool
-                         const afterElement = getDragAfterElement(dropZone, e.clientX);
-                         if (afterElement == null) {
-                            dropZone.appendChild(currentDraggedElement);
-                         } else {
-                            dropZone.insertBefore(currentDraggedElement, afterElement);
-                         }
-                    }
-                });
-
-                dropZone.addEventListener('dragleave', () => {
-                    dropZone.classList.remove('drag-over'); // Remove highlight when drag leaves
-                });
-
-                dropZone.addEventListener('drop', (e) => {
-                    e.preventDefault(); // Prevent default browser drop behavior
-                    dropZone.classList.remove('drag-over'); // Remove highlight
-
-                    if (currentDraggedElement) {
-                        // If the drop zone contains the "Drag words here..." placeholder, clear it
-                        if (dropZone.textContent.trim() === 'Drag words here...') {
-                            dropZone.innerHTML = '';
-                        }
-                        // The element has already been moved to the drop zone during dragover/touchmove.
-                        // We just need to reset its cursor.
-                        currentDraggedElement.classList.remove('cursor-grab');
-                        currentDraggedElement.classList.add('cursor-move');
-                    }
-                });
-
-
-                // Event listener for the Check Answer button
-                checkButton.addEventListener('click', () => {
-                    // Get the text content of all words currently in the drop zone
-                    const arrangedWords = Array.from(dropZone.children).map(word => {
-                        // Exclude the placeholder text from the calculation
-                        if (word.classList.contains('text-gray-600') && word.textContent.trim() === 'Drag words here...') {
-                            return ''; // Return empty string for the placeholder
-                        }
-                        return word.textContent.trim();
-                    }).filter(word => word !== ''); // Filter out any empty strings from placeholder
-
-                    // Join them to form the constructed sentence
-                    const constructedSentence = arrangedWords.join(' ');
-                    const correctSentence = sentenceData.correctOrder;
-
-                    // Normalize sentences for comparison (lowercase, single spaces, trim, remove punctuation for flexible check)
-                    const normalizedConstructed = constructedSentence.replace(/\s+/g, ' ').trim().toLowerCase().replace(/[.,!?;:]/g, '');
-                    const normalizedCorrect = correctSentence.replace(/\s+/g, ' ').trim().toLowerCase().replace(/[.,!?;:]/g, '');
-
-                    // Clear previous feedback classes and messages
-                    feedbackMessage.classList.remove('text-green-600', 'text-red-600', 'correct', 'incorrect');
-                    feedbackMessage.textContent = ''; // Clear content to prevent animation re-trigger issues
-
-                    // Compare and provide feedback
-                    if (normalizedConstructed === normalizedCorrect) {
-                        feedbackMessage.textContent = '✅ Correct! Well done.';
-                        feedbackMessage.classList.add('text-green-600', 'correct');
-                    } else {
-                        feedbackMessage.textContent = '❌ Incorrect. Try again!';
-                        feedbackMessage.classList.add('text-red-600', 'incorrect');
-                    }
-
-                    // Remove animation classes after animation completes to allow re-triggering
-                    feedbackMessage.addEventListener('animationend', () => {
-                        feedbackMessage.classList.remove('correct', 'incorrect');
-                    }, { once: true });
-                });
-
-                // Event listener for the Reset button
-                resetButton.addEventListener('click', () => {
-                    // Reset drop zone placeholder. Ensure it's a div so it doesn't interfere with map() for arrangedWords.
-                    dropZone.innerHTML = '<div class="text-gray-600 text-base sm:text-xl font-medium">Drag words here...</div>';
-                    dropZone.classList.remove('drag-over'); // Ensure highlight is off
-                    feedbackMessage.textContent = ''; // Clear feedback message
-                    feedbackMessage.classList.remove('text-green-600', 'text-red-600', 'correct', 'incorrect'); // Remove feedback colors and animation classes
-                    populateWordPool(); // Repopulate and shuffle words in the word pool
-                });
-            });
-        });
-    </script>
+      });
+    });
+  </script>
 </body>
 </html>
-
