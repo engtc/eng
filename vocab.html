@@ -28,225 +28,339 @@
         }
 
         .header {
-            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             color: white;
-            padding: 30px;
             text-align: center;
+            padding: 30px 20px;
         }
 
         .header h1 {
-            font-size: 2.5rem;
+            font-size: 2.5em;
             margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .header p {
-            font-size: 1.1rem;
+            font-size: 1.1em;
             opacity: 0.9;
         }
 
-        .content {
+        .progress-container {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .score-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px 25px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .current-score {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #4facfe;
+            text-shadow: 0 2px 4px rgba(79, 172, 254, 0.2);
+        }
+
+        .score-percentage {
+            font-size: 2em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 8px rgba(79, 172, 254, 0.3);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .exercise-container {
             padding: 30px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         }
 
         .question-card {
-            background: #f8f9ff;
-            border: 2px solid #e1e8ff;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.8);
+            transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
         }
 
+        .question-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+        }
+
         .question-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(79, 172, 254, 0.15);
         }
 
         .question-number {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
             font-weight: bold;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-        }
-
-        .question-text {
-            font-size: 1.2rem;
-            line-height: 1.6;
+            font-size: 1.3em;
+            border-radius: 50%;
             margin-bottom: 20px;
-            color: #2d3748;
-        }
-
-        .blank {
-            display: inline-block;
-            min-width: 120px;
-            border-bottom: 2px solid #4facfe;
-            margin: 0 5px;
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.3);
             position: relative;
         }
 
-        .input-section {
+        .question-number::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .input-container {
             display: flex;
-            gap: 15px;
+            gap: 10px;
+            margin-bottom: 15px;
             align-items: center;
-            flex-wrap: wrap;
         }
 
         .answer-input {
-            padding: 12px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 1rem;
-            min-width: 150px;
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            font-size: 1.1em;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             background: white;
         }
 
         .answer-input:focus {
             outline: none;
             border-color: #4facfe;
-            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.2);
+            transform: translateY(-2px);
         }
 
-        .check-btn {
-            background: linear-gradient(45deg, #48bb78, #38a169);
-            color: white;
+        .answer-input.correct {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.2);
+        }
+
+        .answer-input.incorrect {
+            border-color: #dc3545;
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.2);
+        }
+
+        .btn {
+            padding: 12px 25px;
             border: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-size: 1rem;
+            border-radius: 12px;
+            font-size: 1em;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
         }
 
-        .check-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
         }
 
-        .check-btn:active {
-            transform: translateY(0);
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+            box-shadow: 0 6px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #5a6268 0%, #343a40 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(108, 117, 125, 0.4);
         }
 
         .feedback {
-            margin-top: 15px;
-            padding: 15px;
-            border-radius: 10px;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 15px;
             font-weight: 500;
             display: none;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feedback::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
         }
 
         .feedback.correct {
-            background: #f0fff4;
-            color: #22543d;
-            border: 2px solid #9ae6b4;
-            display: block;
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            color: #0c5460;
+            border: 1px solid rgba(23, 162, 184, 0.2);
+        }
+
+        .feedback.correct::before {
+            background: #17a2b8;
         }
 
         .feedback.incorrect {
-            background: #fff5f5;
-            color: #742a2a;
-            border: 2px solid #feb2b2;
-            display: block;
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+
+        .feedback.incorrect::before {
+            background: #dc3545;
         }
 
         .explanation {
             margin-top: 10px;
-            padding: 15px;
-            background: #edf2f7;
-            border-radius: 10px;
-            border-left: 4px solid #4facfe;
+            font-style: italic;
+            opacity: 0.8;
+        }
+
+        .results-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
             display: none;
         }
 
-        .explanation.show {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .progress-bar {
-            background: #e2e8f0;
-            height: 8px;
-            border-radius: 4px;
-            margin: 20px 0;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            background: linear-gradient(45deg, #48bb78, #38a169);
-            height: 100%;
-            border-radius: 4px;
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-
         .score {
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #4a5568;
+            font-size: 3em;
+            font-weight: bold;
             margin-bottom: 10px;
         }
 
-        .reset-btn {
-            background: linear-gradient(45deg, #ed8936, #dd6b20);
-            color: white;
-            border: none;
+        .score-text {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .restart-btn {
+            background: white;
+            color: #667eea;
             padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1.1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
-            display: block;
-            margin: 20px auto;
-            box-shadow: 0 4px 15px rgba(237, 137, 54, 0.3);
         }
 
-        .reset-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(237, 137, 54, 0.4);
+        .restart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 600px) {
             .container {
                 margin: 10px;
                 border-radius: 15px;
             }
             
             .header h1 {
-                font-size: 2rem;
+                font-size: 2em;
             }
             
-            .content {
-                padding: 20px;
+            .score-display {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
             }
             
-            .input-section {
+            .input-container {
                 flex-direction: column;
                 align-items: stretch;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-top: 10px;
             }
         }
     </style>
@@ -255,79 +369,90 @@
     <div class="container">
         <div class="header">
             <h1>📚 Vocabulary Challenge</h1>
-            <p>Fill in the blanks with the correct words</p>
+            <p>Fill in the blanks with the correct vocabulary words</p>
         </div>
-        
-        <div class="content">
-            <div class="score">Score: <span id="score">0</span>/10</div>
+
+        <div class="progress-container">
+            <div class="score-display">
+                <div class="current-score" id="currentScore">Score: 0/10</div>
+                <div class="score-percentage" id="scorePercentage">0%</div>
+            </div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
-            
-            <div id="questions"></div>
-            
-            <button class="reset-btn" onclick="resetExercise()">🔄 Start Over</button>
+            <div class="progress-text" id="progressText">Answered 0 of 10 questions</div>
+        </div>
+
+        <div class="exercise-container" id="exerciseContainer">
+            <!-- Questions will be dynamically generated here -->
+        </div>
+
+        <div class="results-container" id="resultsContainer">
+            <div class="score" id="finalScore">0/10</div>
+            <div class="score-text" id="scoreText">Great job!</div>
+            <button class="restart-btn" onclick="restartExercise()">Try Again</button>
         </div>
     </div>
 
     <script>
         const questions = [
             {
-                text: "The hikers had to __________ their trip when a big storm came.",
+                text: "The travelers had to __________ their vehicle after it broke down in the desert.",
                 answer: "abandon",
-                explanation: "Abandon means to give up or leave something completely, especially in a difficult situation. The hikers had to give up their trip due to the dangerous storm."
+                explanation: "Abandon means to give up or leave behind completely, often due to circumstances beyond one's control."
             },
             {
-                text: "We need to __________ this problem and find a solution.",
-                answer: "address",
-                explanation: "Address means to deal with or tackle a problem directly. It means to focus attention on an issue and work to solve it."
+                text: "She is ready to __________ the challenge and solve the issue.",
+                answer: "tackle",
+                explanation: "Tackle means to deal with or attempt to solve a problem in a determined way."
             },
             {
-                text: "She packed all her __________ before moving to a new house.",
+                text: "His __________ were packed neatly into two suitcases.",
                 answer: "belongings",
-                explanation: "Belongings are personal possessions or things that belong to someone. When moving, people pack their belongings (clothes, books, furniture, etc.)."
+                explanation: "Belongings are personal possessions or things that belong to someone."
             },
             {
-                text: "The teacher tries to __________ a love of reading in her students.",
-                answer: "cultivate",
-                explanation: "Cultivate means to develop or encourage the growth of something, like skills, habits, or interests. The teacher is working to develop and nurture her students' love of reading."
+                text: "This camp is designed to __________ independence in young people.",
+                answer: "foster",
+                explanation: "Foster means to encourage or promote the development of something positive."
             },
             {
-                text: "I could __________ my friend in the crowd by her red jacket.",
-                answer: "distinguish",
-                explanation: "Distinguish means to recognize or identify someone or something as different from others. The red jacket made it easy to pick out the friend from the crowd."
+                text: "We quickly __________ a mistake in the report and fixed it.",
+                answer: "spotted",
+                explanation: "Spotted means to see, notice, or recognize something, often among many others (past tense of 'spot')."
             },
             {
-                text: "The project was a success because of good __________.",
-                answer: "execution",
-                explanation: "Execution refers to the process of carrying out or accomplishing a plan or task. Good execution means the project was completed skillfully and effectively."
+                text: "Good __________ helps a group finish a task faster.",
+                answer: "teamwork",
+                explanation: "Teamwork is the cooperative effort of a group of people working together toward a common goal."
             },
             {
-                text: "The desert has a __________ climate with very little rain.",
+                text: "The judge gave him a second chance because of his __________ childhood.",
                 answer: "harsh",
-                explanation: "Harsh describes conditions that are severe, difficult, or unforgiving. Desert climates are harsh because they have extreme temperatures and very little rainfall."
+                explanation: "Harsh means severe, rough, or difficult to endure, often referring to conditions or experiences."
             },
             {
-                text: "The bird is __________ without its mother to protect it.",
+                text: "The injured bird looked small and __________ on the cold ground.",
                 answer: "vulnerable",
-                explanation: "Vulnerable means exposed to danger or harm, defenseless. A young bird without its mother's protection is at risk from predators and other dangers."
+                explanation: "Vulnerable means exposed to danger or harm, unable to protect oneself adequately."
             },
             {
-                text: "Experts __________ that the price of oil might rise next year.",
-                answer: "predict",
-                explanation: "Predict means to say what will happen in the future based on knowledge or evidence. Experts use their knowledge to forecast future oil prices."
+                text: "She was __________ about why her friend didn't reply to the message.",
+                answer: "speculating",
+                explanation: "Speculating means forming theories or making educated guesses about something without having complete information (present continuous form of 'speculate')."
             },
             {
-                text: "The team felt great __________ after winning the final game.",
-                answer: "satisfaction",
-                explanation: "Satisfaction is the feeling of pleasure and contentment when you achieve something or when your needs are fulfilled. Winning brought the team happiness and fulfillment."
+                text: "Their invention won first place, a true __________ for the whole team.",
+                answer: "triumph",
+                explanation: "Triumph is a feeling of great joy and satisfaction from a victory or achievement."
             }
         ];
 
-        let score = 0;
-        let answered = new Set();
+        let currentAnswers = {};
+        let totalCorrect = 0;
         let shuffledQuestions = [];
 
+        // Fisher-Yates shuffle algorithm
         function shuffleArray(array) {
             const shuffled = [...array];
             for (let i = shuffled.length - 1; i > 0; i--) {
@@ -338,89 +463,143 @@
         }
 
         function initializeExercise() {
-            // Shuffle questions every time the exercise is initialized
+            // Shuffle questions each time
             shuffledQuestions = shuffleArray(questions);
             
-            const questionsContainer = document.getElementById('questions');
-            questionsContainer.innerHTML = '';
-            
+            const container = document.getElementById('exerciseContainer');
+            container.innerHTML = '';
+
             shuffledQuestions.forEach((question, index) => {
                 const questionCard = document.createElement('div');
                 questionCard.className = 'question-card';
                 questionCard.innerHTML = `
                     <div class="question-number">${index + 1}</div>
                     <div class="question-text">${question.text}</div>
-                    <div class="input-section">
-                        <input type="text" class="answer-input" id="input-${index}" placeholder="Enter your answer...">
-                        <button class="check-btn" onclick="checkAnswer(${index})">Check Answer</button>
+                    <div class="input-container">
+                        <input type="text" class="answer-input" id="input-${index}" 
+                               placeholder="Type your answer here..." 
+                               onkeyup="handleKeyUp(event, ${index})">
+                        <button class="btn btn-primary" onclick="checkAnswer(${index})">Check Answer</button>
                     </div>
-                    <div class="feedback" id="feedback-${index}"></div>
-                    <div class="explanation" id="explanation-${index}">
-                        <strong>💡 Explanation:</strong> ${question.explanation}
+                    <div class="feedback" id="feedback-${index}">
+                        <div class="explanation"></div>
                     </div>
                 `;
-                questionsContainer.appendChild(questionCard);
-                
-                // Add enter key functionality
-                document.getElementById(`input-${index}`).addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        checkAnswer(index);
-                    }
-                });
+                container.appendChild(questionCard);
             });
+
+            // Add final submit button
+            const submitButton = document.createElement('div');
+            submitButton.style.textAlign = 'center';
+            submitButton.style.marginTop = '30px';
+            submitButton.innerHTML = `
+                <button class="btn btn-secondary" onclick="showResults()" style="font-size: 1.2em; padding: 15px 40px;">
+                    Show Final Results
+                </button>
+            `;
+            container.appendChild(submitButton);
+
+            updateProgress();
+        }
+
+        function handleKeyUp(event, index) {
+            if (event.key === 'Enter') {
+                checkAnswer(index);
+            }
         }
 
         function checkAnswer(index) {
             const input = document.getElementById(`input-${index}`);
             const feedback = document.getElementById(`feedback-${index}`);
-            const explanation = document.getElementById(`explanation-${index}`);
             const userAnswer = input.value.trim().toLowerCase();
             const correctAnswer = shuffledQuestions[index].answer.toLowerCase();
-            
-            if (userAnswer === '') {
-                feedback.textContent = '⚠️ Please enter an answer first!';
-                feedback.className = 'feedback incorrect';
-                return;
-            }
-            
+
+            feedback.style.display = 'block';
+
             if (userAnswer === correctAnswer) {
-                feedback.textContent = '✅ Correct! Well done!';
+                input.className = 'answer-input correct';
                 feedback.className = 'feedback correct';
-                explanation.className = 'explanation show';
-                input.disabled = true;
-                input.style.background = '#f0fff4';
-                
-                if (!answered.has(index)) {
-                    score++;
-                    answered.add(index);
-                    updateScore();
+                feedback.innerHTML = `
+                    <strong>✅ Correct!</strong> The answer is "<strong>${shuffledQuestions[index].answer}</strong>"
+                    <div class="explanation">${shuffledQuestions[index].explanation}</div>
+                `;
+                if (!currentAnswers[index]) {
+                    currentAnswers[index] = true;
+                    totalCorrect++;
                 }
             } else {
-                feedback.textContent = `❌ Incorrect. The correct answer is "${shuffledQuestions[index].answer}".`;
+                input.className = 'answer-input incorrect';
                 feedback.className = 'feedback incorrect';
-                explanation.className = 'explanation show';
-                input.style.background = '#fff5f5';
+                feedback.innerHTML = `
+                    <strong>❌ Not quite right.</strong> The correct answer is "<strong>${shuffledQuestions[index].answer}</strong>"
+                    <div class="explanation">${shuffledQuestions[index].explanation}</div>
+                `;
+                if (currentAnswers[index]) {
+                    currentAnswers[index] = false;
+                    totalCorrect--;
+                }
             }
+
+            updateProgress();
         }
 
-        function updateScore() {
-            document.getElementById('score').textContent = score;
+        function updateProgress() {
+            const answeredCount = Object.keys(currentAnswers).length;
             const progressFill = document.getElementById('progressFill');
-            const percentage = (score / shuffledQuestions.length) * 100;
+            const progressText = document.getElementById('progressText');
+            const currentScore = document.getElementById('currentScore');
+            const scorePercentage = document.getElementById('scorePercentage');
+            
+            const percentage = (answeredCount / shuffledQuestions.length) * 100;
+            const scorePercent = totalCorrect > 0 ? Math.round((totalCorrect / shuffledQuestions.length) * 100) : 0;
+            
             progressFill.style.width = percentage + '%';
+            progressText.textContent = `Answered ${answeredCount} of ${shuffledQuestions.length} questions`;
+            currentScore.textContent = `Score: ${totalCorrect}/${shuffledQuestions.length}`;
+            scorePercentage.textContent = `${scorePercent}%`;
         }
 
-        function resetExercise() {
-            score = 0;
-            answered.clear();
-            updateScore();
+        function showResults() {
+            const exerciseContainer = document.getElementById('exerciseContainer');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const finalScore = document.getElementById('finalScore');
+            const scoreText = document.getElementById('scoreText');
+
+            exerciseContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+
+            finalScore.textContent = `${totalCorrect}/${shuffledQuestions.length}`;
+
+            let message = '';
+            const percentage = (totalCorrect / shuffledQuestions.length) * 100;
+
+            if (percentage === 100) {
+                message = '🎉 Perfect! You\'re a vocabulary master!';
+            } else if (percentage >= 80) {
+                message = '🌟 Excellent work! You\'ve got great vocabulary skills!';
+            } else if (percentage >= 60) {
+                message = '👍 Good job! Keep practicing to improve even more!';
+            } else {
+                message = '📚 Keep studying! Practice makes perfect!';
+            }
+
+            scoreText.textContent = message;
+        }
+
+        function restartExercise() {
+            currentAnswers = {};
+            totalCorrect = 0;
             
-            // Re-shuffle questions when resetting
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('exerciseContainer').style.display = 'block';
+            
             initializeExercise();
         }
 
         // Initialize the exercise when the page loads
-        initializeExercise();
+        window.onload = function() {
+            initializeExercise();
+        };
     </script>
 </body>
 </html>
