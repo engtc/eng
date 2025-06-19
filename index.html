@@ -1,221 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inverted Sentences Puzzle</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>English GE Final Exam Revision</title>
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%);
-      color: #333;
+    /* System font + accent color variables */
+    :root {
+      --accent: #007aff;
+      --accent-hover: #005ecb;
+    }
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+                   Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      background: url('https://www.apple.com/newsroom/images/product/iphone/standard/Apple_iPhone15Pro_lineup_09142023.jpg.large.jpg') center/cover no-repeat;
+      color: #1d1d1f;
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 20px;
-      user-select: none;
+    }
+    .card {
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      padding: 48px 36px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
     }
     h1 {
-      text-align: center;
-      font-size: 2.5rem;
-      color: #3E1F47;
-      margin-bottom: 30px;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-    }
-    .question {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      margin-bottom: 25px;
-      padding: 20px;
-    }
-    .prompt {
-      font-size: 1.2rem;
-      margin-bottom: 8px;
-    }
-    .starter {
-      font-size: 1.4rem;
+      font-size: 1.75rem;
       font-weight: 600;
-      color: #006A71;
-      margin-bottom: 15px;
+      margin-bottom: 16px;
+      position: relative;
     }
-    .answer-area {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      min-height: 50px;
-      padding: 10px;
-      background: #F0F7F4;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      transition: background 0.3s;
+    /* colored underline */
+    h1::after {
+      content: "";
+      display: block;
+      width: 48px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin: 12px auto 0;
     }
-    .answer-slot {
-      flex: 1 1 20%;
-      min-width: 80px;
-      padding: 10px;
-      border: 2px dashed #A0A0A0;
-      border-radius: 6px;
-      background: #fff;
-      text-align: center;
-      transition: all 0.2s;
+    .btn-group {
+      display: grid;
+      gap: 16px;
+      margin-top: 32px;
     }
-    .answer-slot.hovered {
-      background: #D6FFF1;
-      border-color: #00BFA6;
-    }
-    .word-bank {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-    .word {
-      padding: 8px 14px;
-      background: #FFE0A3;
-      border-radius: 6px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      cursor: grab;
-      font-weight: 500;
-      transition: transform 0.2s, background 0.2s;
-    }
-    .word:active {
-      transform: scale(1.1);
-      background: #FFD25A;
-      cursor: grabbing;
-    }
-    .word:hover {
-      background: #FFDFA5;
-    }
-    button {
-      padding: 10px 18px;
-      border: none;
-      border-radius: 8px;
+    .btn {
+      display: block;
+      text-decoration: none;
       font-size: 1rem;
-      font-weight: 600;
-      margin-right: 10px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .check-btn {
-      background: #4CAF50;
+      font-weight: 500;
+      padding: 14px 0;
+      border-radius: 12px;
+      background: var(--accent);
       color: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: background 0.3s ease, transform 0.2s ease;
     }
-    .check-btn:hover {
-      background: #45A049;
+    .btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
     }
-    .reset-btn {
-      background: #F44336;
-      color: #fff;
-    }
-    .reset-btn:hover {
-      background: #E53935;
-    }
-    .feedback {
-      font-size: 1.1rem;
-      margin-top: 12px;
-      min-height: 1.4rem;
-    }
-    .feedback.correct {
-      color: #2E7D32;
-    }
-    .feedback.incorrect {
-      color: #C62828;
-    }
-    @media (max-width: 600px) {
-      .answer-slot { flex: 1 1 45%; }
-      .word { flex: 1 1 45%; }
+    .btn:active {
+      transform: translateY(0);
+      background: var(--accent);
     }
   </style>
 </head>
 <body>
-  <h1>Rearrange the Inverted Sentences!</h1>
-  <div id="questions-container"></div>
-
-  <script>
-    const questions = [
-      { starter: 'Rarely', words: ['do', 'we', 'get', 'the', 'chance', 'to', 'witness', 'such', 'natural', 'beauty.'], answer: ['do','we','get','the','chance','to','witness','such','natural','beauty.'] },
-      { starter: 'Never have I', words: ['heard', 'such', 'an', 'inspiring', 'speech.'], answer: ['heard','such','an','inspiring','speech.'] },
-      { starter: 'Only if', words: ['you', 'study', 'hard', 'will', 'you', 'pass', 'the', 'final', 'exam.'], answer: ['you','study','hard','will','you','pass','the','final','exam.'] },
-      { starter: 'Had', words: ['I', 'known', 'about', 'the', 'meeting,', 'I', 'would', 'have', 'attended.'], answer: ['I','known','about','the','meeting,','I','would','have','attended.'] }
-    ];
-
-    function shuffle(arr) { return arr.slice().sort(() => Math.random() - 0.5); }
-
-    function createQuestion(q, idx) {
-      const container = document.createElement('div'); container.className = 'question';
-      container.innerHTML = `
-        <div class="prompt">Arrange the words:</div>
-        <div class="starter">${q.starter}</div>
-        <div class="answer-area" data-index="${idx}"></div>
-        <div class="word-bank" data-index="${idx}"></div>
-        <button class="check-btn" data-action="check" data-index="${idx}">Check</button>
-        <button class="reset-btn" data-action="reset" data-index="${idx}">Reset</button>
-        <div class="feedback" data-index="${idx}"></div>
-      `;
-      document.getElementById('questions-container').appendChild(container);
-
-      const bank = container.querySelector('.word-bank');
-      const slots = container.querySelector('.answer-area');
-
-      for (let i = 0; i < q.words.length; i++) {
-        const slot = document.createElement('div'); slot.className = 'answer-slot'; slot.dataset.slot = i;
-        slot.addEventListener('dragover', dragOverHandler);
-        slot.addEventListener('dragleave', dragLeaveHandler);
-        slot.addEventListener('drop', dropHandler);
-        slots.appendChild(slot);
-      }
-
-      shuffle(q.words).forEach(word => {
-        const w = document.createElement('div');
-        w.className = 'word'; w.draggable = true; w.textContent = word;
-        w.addEventListener('dragstart', dragStartHandler);
-        w.addEventListener('dragend', dragEndHandler);
-        bank.appendChild(w);
-      });
-    }
-
-    let dragged;
-    const dragStartHandler = function() { dragged = this; setTimeout(() => this.style.display='none', 0); };
-    const dragEndHandler = function() { this.style.display='block'; };
-    const dragOverHandler = function(e) { e.preventDefault(); this.classList.add('hovered'); };
-    const dragLeaveHandler = function() { this.classList.remove('hovered'); };
-    const dropHandler = function(e) { e.preventDefault(); this.classList.remove('hovered'); if(!this.hasChildNodes()) this.appendChild(dragged); };
-
-    function checkAnswer(idx) {
-      const q = questions[idx];
-      const slots = document.querySelectorAll(`.answer-area[data-index='${idx}'] .answer-slot`);
-      let correctCount = 0;
-      slots.forEach((slot,i) => {
-        const w = slot.firstChild ? slot.firstChild.textContent : '';
-        if (w === q.answer[i]) { slot.style.borderColor='#2E7D32'; correctCount++; }
-        else { slot.style.borderColor='#C62828'; }
-      });
-      const fb = document.querySelector(`.feedback[data-index='${idx}']`);
-      if (correctCount === q.answer.length) { fb.textContent='Perfect! 🎉'; fb.className='feedback correct'; }
-      else { fb.textContent=`${correctCount} of ${q.answer.length} correct.`; fb.className='feedback incorrect'; }
-    }
-
-    function resetQuestion(idx) {
-      const container = document.querySelector(`.question:nth-child(${idx+1})`);
-      const bank = container.querySelector('.word-bank'); bank.innerHTML='';
-      container.querySelectorAll('.answer-slot').forEach(s => { s.innerHTML=''; s.style.borderColor='#A0A0A0'; });
-      container.querySelector(`.feedback[data-index='${idx}']`).textContent='';
-      shuffle(questions[idx].words).forEach(word => {
-        const w = document.createElement('div'); w.className='word'; w.draggable=true; w.textContent=word;
-        w.addEventListener('dragstart', dragStartHandler);
-        w.addEventListener('dragend', dragEndHandler);
-        bank.appendChild(w);
-      });
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      questions.forEach((q,i) => createQuestion(q,i));
-      document.body.addEventListener('click', e => {
-        if (e.target.tagName==='BUTTON') {
-          const idx = e.target.dataset.index;
-          e.target.dataset.action==='check' ? checkAnswer(idx) : resetQuestion(idx);
-        }
-      });
-    });
-  </script>
+  <div class="card">
+    <h1>English GE Final Exam Revision</h1>
+    <div class="btn-group">
+      <a class="btn" href="">10 Specified Words Revision</a>
+      <a class="btn" href="">Rearranging Sentences</a>
+      <a class="btn" href="">Be used to &amp; Used to</a>
+    </div>
+  </div>
 </body>
 </html>
