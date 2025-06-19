@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Exercise</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .question-card {
+            background: #f8f9ff;
+            border: 2px solid #e1e8ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .question-number {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+
+        .blank {
+            display: inline-block;
+            min-width: 120px;
+            border-bottom: 2px solid #4facfe;
+            margin: 0 5px;
+            position: relative;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .answer-input {
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            min-width: 150px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .check-btn {
+            background: linear-gradient(45deg, #48bb78, #38a169);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+        }
+
+        .check-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+        }
+
+        .check-btn:active {
+            transform: translateY(0);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #f0fff4;
+            color: #22543d;
+            border: 2px solid #9ae6b4;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background: #fff5f5;
+            color: #742a2a;
+            border: 2px solid #feb2b2;
+            display: block;
+        }
+
+        .explanation {
+            margin-top: 10px;
+            padding: 15px;
+            background: #edf2f7;
+            border-radius: 10px;
+            border-left: 4px solid #4facfe;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(45deg, #48bb78, #38a169);
+            height: 100%;
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .reset-btn {
+            background: linear-gradient(45deg, #ed8936, #dd6b20);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 20px auto;
+            box-shadow: 0 4px 15px rgba(237, 137, 54, 0.3);
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(237, 137, 54, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .input-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Vocabulary Challenge</h1>
+            <p>Fill in the blanks with the correct words</p>
+        </div>
+        
+        <div class="content">
+            <div class="score">Score: <span id="score">0</span>/10</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div id="questions"></div>
+            
+            <button class="reset-btn" onclick="resetExercise()">🔄 Start Over</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                text: "The hikers had to __________ their trip when a big storm came.",
+                answer: "abandon",
+                explanation: "Abandon means to give up or leave something completely, especially in a difficult situation. The hikers had to give up their trip due to the dangerous storm."
+            },
+            {
+                text: "We need to __________ this problem and find a solution.",
+                answer: "address",
+                explanation: "Address means to deal with or tackle a problem directly. It means to focus attention on an issue and work to solve it."
+            },
+            {
+                text: "She packed all her __________ before moving to a new house.",
+                answer: "belongings",
+                explanation: "Belongings are personal possessions or things that belong to someone. When moving, people pack their belongings (clothes, books, furniture, etc.)."
+            },
+            {
+                text: "The teacher tries to __________ a love of reading in her students.",
+                answer: "cultivate",
+                explanation: "Cultivate means to develop or encourage the growth of something, like skills, habits, or interests. The teacher is working to develop and nurture her students' love of reading."
+            },
+            {
+                text: "I could __________ my friend in the crowd by her red jacket.",
+                answer: "distinguish",
+                explanation: "Distinguish means to recognize or identify someone or something as different from others. The red jacket made it easy to pick out the friend from the crowd."
+            },
+            {
+                text: "The project was a success because of good __________.",
+                answer: "execution",
+                explanation: "Execution refers to the process of carrying out or accomplishing a plan or task. Good execution means the project was completed skillfully and effectively."
+            },
+            {
+                text: "The desert has a __________ climate with very little rain.",
+                answer: "harsh",
+                explanation: "Harsh describes conditions that are severe, difficult, or unforgiving. Desert climates are harsh because they have extreme temperatures and very little rainfall."
+            },
+            {
+                text: "The bird is __________ without its mother to protect it.",
+                answer: "vulnerable",
+                explanation: "Vulnerable means exposed to danger or harm, defenseless. A young bird without its mother's protection is at risk from predators and other dangers."
+            },
+            {
+                text: "Experts __________ that the price of oil might rise next year.",
+                answer: "predict",
+                explanation: "Predict means to say what will happen in the future based on knowledge or evidence. Experts use their knowledge to forecast future oil prices."
+            },
+            {
+                text: "The team felt great __________ after winning the final game.",
+                answer: "satisfaction",
+                explanation: "Satisfaction is the feeling of pleasure and contentment when you achieve something or when your needs are fulfilled. Winning brought the team happiness and fulfillment."
+            }
+        ];
+
+        let score = 0;
+        let answered = new Set();
+        let shuffledQuestions = [];
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function initializeExercise() {
+            // Shuffle questions every time the exercise is initialized
+            shuffledQuestions = shuffleArray(questions);
+            
+            const questionsContainer = document.getElementById('questions');
+            questionsContainer.innerHTML = '';
+            
+            shuffledQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.innerHTML = `
+                    <div class="question-number">${index + 1}</div>
+                    <div class="question-text">${question.text}</div>
+                    <div class="input-section">
+                        <input type="text" class="answer-input" id="input-${index}" placeholder="Enter your answer...">
+                        <button class="check-btn" onclick="checkAnswer(${index})">Check Answer</button>
+                    </div>
+                    <div class="feedback" id="feedback-${index}"></div>
+                    <div class="explanation" id="explanation-${index}">
+                        <strong>💡 Explanation:</strong> ${question.explanation}
+                    </div>
+                `;
+                questionsContainer.appendChild(questionCard);
+                
+                // Add enter key functionality
+                document.getElementById(`input-${index}`).addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkAnswer(index);
+                    }
+                });
+            });
+        }
+
+        function checkAnswer(index) {
+            const input = document.getElementById(`input-${index}`);
+            const feedback = document.getElementById(`feedback-${index}`);
+            const explanation = document.getElementById(`explanation-${index}`);
+            const userAnswer = input.value.trim().toLowerCase();
+            const correctAnswer = shuffledQuestions[index].answer.toLowerCase();
+            
+            if (userAnswer === '') {
+                feedback.textContent = '⚠️ Please enter an answer first!';
+                feedback.className = 'feedback incorrect';
+                return;
+            }
+            
+            if (userAnswer === correctAnswer) {
+                feedback.textContent = '✅ Correct! Well done!';
+                feedback.className = 'feedback correct';
+                explanation.className = 'explanation show';
+                input.disabled = true;
+                input.style.background = '#f0fff4';
+                
+                if (!answered.has(index)) {
+                    score++;
+                    answered.add(index);
+                    updateScore();
+                }
+            } else {
+                feedback.textContent = `❌ Incorrect. The correct answer is "${shuffledQuestions[index].answer}".`;
+                feedback.className = 'feedback incorrect';
+                explanation.className = 'explanation show';
+                input.style.background = '#fff5f5';
+            }
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            const progressFill = document.getElementById('progressFill');
+            const percentage = (score / shuffledQuestions.length) * 100;
+            progressFill.style.width = percentage + '%';
+        }
+
+        function resetExercise() {
+            score = 0;
+            answered.clear();
+            updateScore();
+            
+            // Re-shuffle questions when resetting
+            initializeExercise();
+        }
+
+        // Initialize the exercise when the page loads
+        initializeExercise();
+    </script>
+</body>
+</html>

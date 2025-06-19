@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentence Rearranging Exercise</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            overflow: hidden;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 3px 6px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .instructions {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .instructions h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .instructions p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .score-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 5px solid #ff6b6b;
+        }
+
+        .score {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2d3436;
+        }
+
+        .progress-bar {
+            width: 60%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #00b894, #00cec9);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .exercise-card {
+            background: #ffffff;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .exercise-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        }
+
+        .exercise-number {
+            background: linear-gradient(45deg, #fd79a8, #fdcb6e);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .exercise-type {
+            background: #6c5ce7;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .fragments-container {
+            background: #f1f3f4;
+            border: 2px dashed #74b9ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 80px;
+        }
+
+        .fragments-title {
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .fragment {
+            display: inline-block;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 25px;
+            cursor: grab;
+            user-select: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(116, 185, 255, 0.3);
+        }
+
+        .fragment:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(116, 185, 255, 0.4);
+        }
+
+        .fragment:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+        }
+
+        .fragment.dragging {
+            opacity: 0.7;
+            transform: rotate(5deg);
+        }
+
+        .answer-area {
+            background: #fff;
+            border: 3px solid #00b894;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .answer-area.drag-over {
+            background: #d1f2eb;
+            border-color: #00cec9;
+        }
+
+        .answer-area:empty::before {
+            content: "🎯 Drop sentence fragments here to build your answer";
+            color: #74b9ff;
+            font-style: italic;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .check-btn {
+            background: linear-gradient(45deg, #00b894, #00cec9);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.3);
+            margin-right: 15px;
+        }
+
+        .check-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 184, 148, 0.4);
+        }
+
+        .clear-btn {
+            background: linear-gradient(45px, #fd79a8, #e84393);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(253, 121, 168, 0.3);
+        }
+
+        .clear-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(253, 121, 168, 0.4);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-weight: 500;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border: 2px solid #b8daff;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border: 2px solid #f1b0b7;
+        }
+
+        .reset-btn {
+            background: linear-gradient(45deg, #a29bfe, #6c5ce7);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.3);
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(108, 92, 231, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .score-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .progress-bar {
+                width: 100%;
+            }
+            
+            .fragment {
+                font-size: 0.85rem;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔤 Sentence Builder</h1>
+            <p>Master Conditionals & Relative Clauses through Drag & Drop</p>
+        </div>
+        
+        <div class="content">
+            <div class="instructions">
+                <h3>📝 How to Play</h3>
+                <p>Drag and drop the sentence fragments to create grammatically correct sentences. Focus on proper word order for conditionals and relative clauses!</p>
+            </div>
+            
+            <div class="score-section">
+                <div class="score">Score: <span id="score">0</span>/8</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
+            <div id="exercises"></div>
+            
+            <button class="reset-btn" onclick="resetExercise()">🔄 Start Fresh</button>
+        </div>
+    </div>
+
+    <script>
+        const exercises = [
+            {
+                type: "Conditional Type 2",
+                fragments: ["If I", "were", "rich,", "I would", "buy", "a big house."],
+                correctOrder: ["If I", "were", "rich,", "I would", "buy", "a big house."]
+            },
+            {
+                type: "Defining Relative Clause",
+                fragments: ["The book", "that", "you recommended", "is", "very", "interesting."],
+                correctOrder: ["The book", "that", "you recommended", "is", "very", "interesting."]
+            },
+            {
+                type: "Conditional Type 2",
+                fragments: ["She would", "travel", "around the world", "if she", "had", "more money."],
+                correctOrder: ["She would", "travel", "around the world", "if she", "had", "more money."]
+            },
+            {
+                type: "Non-defining Relative Clause",
+                fragments: ["My sister,", "who", "lives in London,", "is", "a doctor."],
+                correctOrder: ["My sister,", "who", "lives in London,", "is", "a doctor."]
+            },
+            {
+                type: "Conditional Type 2",
+                fragments: ["If they", "studied", "harder,", "they would", "pass", "the exam."],
+                correctOrder: ["If they", "studied", "harder,", "they would", "pass", "the exam."]
+            },
+            {
+                type: "Defining Relative Clause",
+                fragments: ["The man", "who", "called you", "is", "my", "neighbor."],
+                correctOrder: ["The man", "who", "called you", "is", "my", "neighbor."]
+            },
+            {
+                type: "Non-defining Relative Clause",
+                fragments: ["The movie,", "which", "won an Oscar,", "was", "really", "amazing."],
+                correctOrder: ["The movie,", "which", "won an Oscar,", "was", "really", "amazing."]
+            },
+            {
+                type: "Conditional Type 2",
+                fragments: ["What would", "you do", "if you", "won", "the", "lottery?"],
+                correctOrder: ["What would", "you do", "if you", "won", "the", "lottery?"]
+            }
+        ];
+
+        let score = 0;
+        let answered = new Set();
+        let shuffledExercises = [];
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function initializeExercise() {
+            shuffledExercises = exercises.map(exercise => ({
+                ...exercise,
+                fragments: shuffleArray(exercise.fragments)
+            }));
+            
+            const exercisesContainer = document.getElementById('exercises');
+            exercisesContainer.innerHTML = '';
+            
+            shuffledExercises.forEach((exercise, index) => {
+                const exerciseCard = document.createElement('div');
+                exerciseCard.className = 'exercise-card';
+                exerciseCard.innerHTML = `
+                    <div class="exercise-number">${index + 1}</div>
+                    <div class="exercise-type">${exercise.type}</div>
+                    
+                    <div class="fragments-container">
+                        <div class="fragments-title">Available Fragments:</div>
+                        <div id="fragments-${index}">
+                            ${exercise.fragments.map((fragment, fragIndex) => 
+                                `<span class="fragment" draggable="true" data-exercise="${index}" data-fragment="${fragIndex}">${fragment}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="answer-area" id="answer-${index}" ondrop="drop(event, ${index})" ondragover="allowDrop(event)"></div>
+                    
+                    <button class="check-btn" onclick="checkAnswer(${index})">✓ Check Answer</button>
+                    <button class="clear-btn" onclick="clearAnswer(${index})">✗ Clear</button>
+                    
+                    <div class="feedback" id="feedback-${index}"></div>
+                `;
+                exercisesContainer.appendChild(exerciseCard);
+            });
+            
+            addDragListeners();
+        }
+
+        function addDragListeners() {
+            const fragments = document.querySelectorAll('.fragment');
+            fragments.forEach(fragment => {
+                fragment.addEventListener('dragstart', dragStart);
+                fragment.addEventListener('dragend', dragEnd);
+            });
+        }
+
+        function dragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.outerHTML);
+            e.dataTransfer.setData('fragment-id', e.target.dataset.fragment);
+            e.dataTransfer.setData('exercise-id', e.target.dataset.exercise);
+            e.target.classList.add('dragging');
+        }
+
+        function dragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        function allowDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function drop(e, exerciseIndex) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            
+            const fragmentHTML = e.dataTransfer.getData('text/plain');
+            const sourceExercise = e.dataTransfer.getData('exercise-id');
+            const fragmentId = e.dataTransfer.getData('fragment-id');
+            
+            if (sourceExercise == exerciseIndex) {
+                const answerArea = document.getElementById(`answer-${exerciseIndex}`);
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = fragmentHTML;
+                const newFragment = tempDiv.firstChild;
+                
+                newFragment.style.background = 'linear-gradient(135度, #00b894, #00cec9)';
+                newFragment.draggable = true;
+                newFragment.addEventListener('dragstart', dragStart);
+                newFragment.addEventListener('dragend', dragEnd);
+                newFragment.onclick = () => returnFragment(newFragment, exerciseIndex, fragmentId);
+                
+                answerArea.appendChild(newFragment);
+                
+                // Remove original fragment
+                const originalFragment = document.querySelector(`[data-exercise="${exerciseIndex}"][data-fragment="${fragmentId}"]`);
+                if (originalFragment && originalFragment.parentNode.id === `fragments-${exerciseIndex}`) {
+                    originalFragment.remove();
+                }
+            }
+        }
+
+        function returnFragment(fragmentElement, exerciseIndex, fragmentId) {
+            const fragmentsContainer = document.getElementById(`fragments-${exerciseIndex}`);
+            const newFragment = fragmentElement.cloneNode(true);
+            
+            newFragment.style.background = 'linear-gradient(135deg, #74b9ff, #0984e3)';
+            newFragment.onclick = null;
+            fragmentsContainer.appendChild(newFragment);
+            
+            fragmentElement.remove();
+        }
+
+        function clearAnswer(exerciseIndex) {
+            const answerArea = document.getElementById(`answer-${exerciseIndex}`);
+            const fragmentsContainer = document.getElementById(`fragments-${exerciseIndex}`);
+            
+            Array.from(answerArea.children).forEach(fragment => {
+                const newFragment = fragment.cloneNode(true);
+                newFragment.style.background = 'linear-gradient(135deg, #74b9ff, #0984e3)';
+                newFragment.onclick = null;
+                fragmentsContainer.appendChild(newFragment);
+            });
+            
+            answerArea.innerHTML = '';
+            
+            const feedback = document.getElementById(`feedback-${exerciseIndex}`);
+            feedback.style.display = 'none';
+        }
+
+        function checkAnswer(exerciseIndex) {
+            const answerArea = document.getElementById(`answer-${exerciseIndex}`);
+            const feedback = document.getElementById(`feedback-${exerciseIndex}`);
+            const userAnswer = Array.from(answerArea.children).map(el => el.textContent.trim());
+            const correctAnswer = exercises[exerciseIndex].correctOrder;
+            
+            if (userAnswer.length === 0) {
+                feedback.textContent = '⚠️ Please arrange some fragments first!';
+                feedback.className = 'feedback incorrect';
+                feedback.style.display = 'block';
+                return;
+            }
+            
+            const isCorrect = JSON.stringify(userAnswer) === JSON.stringify(correctAnswer);
+            
+            if (isCorrect) {
+                feedback.innerHTML = `
+                    <strong>🎉 Excellent!</strong> You've arranged the sentence correctly!<br>
+                    <em>"${userAnswer.join(' ')}"</em>
+                `;
+                feedback.className = 'feedback correct';
+                
+                if (!answered.has(exerciseIndex)) {
+                    score++;
+                    answered.add(exerciseIndex);
+                    updateScore();
+                }
+            } else {
+                feedback.innerHTML = `
+                    <strong>❌ Not quite right.</strong> Try rearranging the fragments.<br>
+                    <em>Your answer: "${userAnswer.join(' ')}"</em><br>
+                    <small>💡 Hint: Check the word order for ${exercises[exerciseIndex].type.toLowerCase()}.</small>
+                `;
+                feedback.className = 'feedback incorrect';
+            }
+            
+            feedback.style.display = 'block';
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            const progressFill = document.getElementById('progressFill');
+            const percentage = (score / exercises.length) * 100;
+            progressFill.style.width = percentage + '%';
+        }
+
+        function resetExercise() {
+            score = 0;
+            answered.clear();
+            updateScore();
+            initializeExercise();
+        }
+
+        // Initialize the exercise when the page loads
+        initializeExercise();
+    </script>
+</body>
+</html>
