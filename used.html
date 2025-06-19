@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>True-False Exercise: Be Used To vs Used To</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+            padding: 35px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 3px 6px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 35px;
+        }
+
+        .instructions {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            color: #2d3436;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(255, 154, 158, 0.2);
+        }
+
+        .instructions h3 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: #2d3436;
+        }
+
+        .instructions p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .score-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            border-left: 6px solid #4ecdc4;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .score {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #2d3436;
+        }
+
+        .progress-container {
+            width: 60%;
+        }
+
+        .progress-label {
+            font-size: 0.9rem;
+            color: #636e72;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #ddd;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            width: 0%;
+            transition: width 0.6s ease;
+            border-radius: 6px;
+        }
+
+        .question-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+
+        .question-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            background: linear-gradient(45deg, #fd79a8, #fdcb6e);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-right: 15px;
+            box-shadow: 0 4px 15px rgba(253, 121, 168, 0.3);
+        }
+
+        .question-type {
+            background: #6c5ce7;
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            color: #2d3436;
+            font-weight: 500;
+        }
+
+        .options-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            flex: 1;
+            padding: 15px 25px;
+            border: 3px solid #e9ecef;
+            border-radius: 15px;
+            background: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn.true-btn {
+            color: #00b894;
+        }
+
+        .option-btn.false-btn {
+            color: #e17055;
+        }
+
+        .option-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .option-btn.selected.true-btn {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+            border-color: #00b894;
+            box-shadow: 0 8px 25px rgba(0, 184, 148, 0.3);
+        }
+
+        .option-btn.selected.false-btn {
+            background: linear-gradient(135deg, #e17055, #d63031);
+            color: white;
+            border-color: #e17055;
+            box-shadow: 0 8px 25px rgba(225, 112, 85, 0.3);
+        }
+
+        .check-btn {
+            background: linear-gradient(45deg, #00b894, #00cec9);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.3);
+            margin-right: 15px;
+        }
+
+        .check-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 184, 148, 0.4);
+        }
+
+        .check-btn:disabled {
+            background: #ddd;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            font-weight: 500;
+            display: none;
+            animation: slideIn 0.4s ease;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border: 2px solid #b8daff;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border: 2px solid #f1b0b7;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 18px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #4ecdc4;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .reset-btn {
+            background: linear-gradient(45deg, #a29bfe, #6c5ce7);
+            color: white;
+            border: none;
+            padding: 18px 45px;
+            border-radius: 25px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 40px auto 0;
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.3);
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(108, 92, 231, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .content {
+                padding: 25px;
+            }
+            
+            .score-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .progress-container {
+                width: 100%;
+            }
+            
+            .options-container {
+                flex-direction: column;
+            }
+            
+            .question-text {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>✓✗ True or False</h1>
+                <p>Master "Be Used To" vs "Used To"</p>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="instructions">
+                <h3>📖 Instructions</h3>
+                <p>Read each statement carefully and decide if it's grammatically correct (TRUE) or incorrect (FALSE). Focus on the proper usage of "be used to" and "used to".</p>
+            </div>
+            
+            <div class="score-section">
+                <div class="score">Score: <span id="score">0</span>/10</div>
+                <div class="progress-container">
+                    <div class="progress-label">Progress</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="questions"></div>
+            
+            <button class="reset-btn" onclick="resetExercise()">🔄 Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                text: "I used to live in Paris when I was a child.",
+                correct: true,
+                explanation: "CORRECT: 'Used to' is properly used here to describe a past habit or state that no longer exists. The structure is 'used to + base verb'."
+            },
+            {
+                text: "She is used to wake up early every morning.",
+                correct: false,
+                explanation: "INCORRECT: It should be 'She is used to waking up early' or 'She used to wake up early'. 'Be used to' requires a gerund (-ing form) or noun after it."
+            },
+            {
+                text: "We are used to the cold weather here.",
+                correct: true,
+                explanation: "CORRECT: 'Be used to' is properly used with a noun ('the cold weather') to express being accustomed to something in the present."
+            },
+            {
+                text: "He didn't used to like vegetables, but now he does.",
+                correct: false,
+                explanation: "INCORRECT: It should be 'He didn't use to like vegetables'. In negative and question forms, 'used to' becomes 'use to' after 'did/didn't'."
+            },
+            {
+                text: "I'm getting used to driving on the left side of the road.",
+                correct: true,
+                explanation: "CORRECT: 'Getting used to' + gerund (-ing form) is the correct structure to express the process of becoming accustomed to something."
+            },
+            {
+                text: "Did you used to play football when you were young?",
+                correct: false,
+                explanation: "INCORRECT: It should be 'Did you use to play football?' In questions with 'did', 'used to' becomes 'use to'."
+            },
+            {
+                text: "They are used to working long hours.",
+                correct: true,
+                explanation: "CORRECT: 'Be used to' + gerund (-ing form) correctly expresses being accustomed to an activity or situation."
+            },
+            {
+                text: "My grandmother used to tell me stories before bedtime.",
+                correct: true,
+                explanation: "CORRECT: 'Used to' + base verb is the proper structure to describe past habits or repeated actions that no longer happen."
+            },
+            {
+                text: "I'm not used to eat spicy food.",
+                correct: false,
+                explanation: "INCORRECT: It should be 'I'm not used to eating spicy food'. 'Be used to' requires a gerund (-ing form) or noun, not a base verb."
+            },
+            {
+                text: "The children will get used to their new school soon.",
+                correct: true,
+                explanation: "CORRECT: 'Get used to' in future tense is properly used to express the process of becoming accustomed to something new."
+            }
+        ];
+
+        let score = 0;
+        let answered = new Set();
+        let shuffledQuestions = [];
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function initializeExercise() {
+            shuffledQuestions = shuffleArray(questions);
+            score = 0;
+            answered.clear();
+            updateScore();
+            
+            const questionsContainer = document.getElementById('questions');
+            questionsContainer.innerHTML = '';
+            
+            shuffledQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.innerHTML = `
+                    <div class="question-header">
+                        <div class="question-number">${index + 1}</div>
+                        <div class="question-type">Grammar Check</div>
+                    </div>
+                    <div class="question-text">"${question.text}"</div>
+                    <div class="options-container">
+                        <button class="option-btn true-btn" onclick="selectOption(${index}, true)">
+                            ✓ TRUE
+                        </button>
+                        <button class="option-btn false-btn" onclick="selectOption(${index}, false)">
+                            ✗ FALSE
+                        </button>
+                    </div>
+                    <button class="check-btn" id="check-${index}" onclick="checkAnswer(${index})" disabled>
+                        Check Answer
+                    </button>
+                    <div class="feedback" id="feedback-${index}"></div>
+                `;
+                questionsContainer.appendChild(questionCard);
+            });
+        }
+
+        function selectOption(questionIndex, selectedAnswer) {
+            const trueBtns = document.querySelectorAll(`#questions .question-card:nth-child(${questionIndex + 1}) .true-btn`);
+            const falseBtns = document.querySelectorAll(`#questions .question-card:nth-child(${questionIndex + 1}) .false-btn`);
+            
+            // Remove selection from both buttons
+            trueBtns[0].classList.remove('selected');
+            falseBtns[0].classList.remove('selected');
+            
+            // Add selection to clicked button
+            if (selectedAnswer) {
+                trueBtns[0].classList.add('selected');
+            } else {
+                falseBtns[0].classList.add('selected');
+            }
+            
+            // Store the answer and enable check button
+            shuffledQuestions[questionIndex].userAnswer = selectedAnswer;
+            document.getElementById(`check-${questionIndex}`).disabled = false;
+        }
+
+        function checkAnswer(questionIndex) {
+            const question = shuffledQuestions[questionIndex];
+            const feedback = document.getElementById(`feedback-${questionIndex}`);
+            const checkBtn = document.getElementById(`check-${questionIndex}`);
+            
+            if (question.userAnswer === undefined) {
+                return;
+            }
+            
+            const isCorrect = question.userAnswer === question.correct;
+            
+            if (isCorrect) {
+                feedback.innerHTML = `
+                    <strong>🎉 Correct!</strong> Great job!
+                    <div class="explanation">${question.explanation}</div>
+                `;
+                feedback.className = 'feedback correct';
+                
+                if (!answered.has(questionIndex)) {
+                    score++;
+                    answered.add(questionIndex);
+                    updateScore();
+                }
+            } else {
+                feedback.innerHTML = `
+                    <strong>❌ Incorrect.</strong> Try to review the grammar rules.
+                    <div class="explanation">${question.explanation}</div>
+                `;
+                feedback.className = 'feedback incorrect';
+            }
+            
+            feedback.style.display = 'block';
+            checkBtn.disabled = true;
+            
+            // Disable option buttons after checking
+            const optionBtns = document.querySelectorAll(`#questions .question-card:nth-child(${questionIndex + 1}) .option-btn`);
+            optionBtns.forEach(btn => {
+                btn.style.pointerEvents = 'none';
+                btn.style.opacity = '0.7';
+            });
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            const progressFill = document.getElementById('progressFill');
+            const percentage = (score / questions.length) * 100;
+            progressFill.style.width = percentage + '%';
+        }
+
+        function resetExercise() {
+            initializeExercise();
+        }
+
+        // Initialize the exercise when the page loads
+        initializeExercise();
+    </script>
+</body>
+</html>
